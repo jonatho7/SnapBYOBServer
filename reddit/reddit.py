@@ -449,6 +449,9 @@ def get_posts(subreddit='all', sort_mode='hot', allow_nsfw=False):
         if not allow_nsfw:
             posts = [post for post in posts if not post.is_nsfw]
         #Jon edited this code.
+        #Test to see if the ups are set.
+        print("ups for post 0:")
+        print(posts[0].ups)
         return posts_to_dict(posts)
     else:
         if _CONNECTED:
