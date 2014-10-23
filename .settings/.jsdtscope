@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="static/js"/>
+	<classpathentry kind="src" path="static/Snap_js"/>
+	<classpathentry excluding="Snap/" kind="src" path="templates"/>
+	<classpathentry kind="src" path="templates/Snap"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
