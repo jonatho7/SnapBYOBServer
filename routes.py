@@ -70,12 +70,23 @@ def weather():
     app.logger.debug(locationString)
     return jsonify(weatherReport=weatherReport)
     
-@app.route('/reddit')
-def reddit():
+@app.route('/redditPosts')
+def redditPosts():
     subreddit = request.args.get('subreddit')
-    posts = red.get_posts(subreddit,'hot',False)
+    posts = red.get_posts_as_json(subreddit,'hot',False)
     return jsonify(redditReport=posts)
-    
+
+@app.route('/redditComments')
+def redditComments():
+    postID = str(request.args.get('postID'))
+    sort_mode='hot'
+    max_depth=5
+    max_breadth=5
+    commentsList = red.get_comments(postID, sort_mode, max_depth, max_breadth)
+    commentsJson = red.comments_to_json(commentsList)
+    return jsonify(redditReport=commentsJson)
+    #TODO. Can I return without using jsonify, bc it is already in json format?
+
 
 if __name__ == '__main__':
     app.debug = True

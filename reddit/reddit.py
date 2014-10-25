@@ -304,6 +304,19 @@ class Comment(object):
                        _parse_int(data.get('created', '0'), 0),
                        data.get('body', ''),
                        replies)
+    
+    #Jon added this code.
+    def _to_json(self):
+        return {'id': self.id,
+                'author': self.author,
+                'subreddit': self.subreddit,
+                'downs': self.downs,
+                'ups': self.ups,
+                'created': self.created,
+                'body': self.body,
+                'replies': map(Comment._to_json, self.replies)
+                }
+    
 
 class Post(object):
     """
@@ -376,7 +389,7 @@ class Post(object):
                     _parse_boolean(not data.get('is_self', False), False))
     
     #Jon added this code.
-    def _to_dict(self):
+    def _to_json(self):
         return {'id': self.id,
                 'author': self.author,
                 'subreddit': self.subreddit,
@@ -452,16 +465,41 @@ def get_posts(subreddit='all', sort_mode='hot', allow_nsfw=False):
         #Test to see if the ups are set.
         print("ups for post 0:")
         print(posts[0].ups)
-        return posts_to_dict(posts)
+        return posts
     else:
         if _CONNECTED:
             raise RedditException("No response from the server.")
         else:
             raise RedditException("No data was in the cache for this subreddit.")
-    
+
+#Convert the slimmed down object back into a dictionary, for use with Snap!, for example.
+def get_posts_as_json(subreddit='all', sort_mode='hot', allow_nsfw=False):
+    posts = get_posts(subreddit, sort_mode, allow_nsfw)
+    jsonPosts = posts_to_json(posts)
+    return jsonPosts
+
+
 #Jon added this code.
-def posts_to_dict(posts):
-    return {'posts': map(Post._to_dict, posts)}
+def posts_to_json(posts):
+    return {"posts": map(Post._to_json, posts)}
+
+
+def json_to_post(data):
+    postObject = Post(data.get('id', ''),
+                      data.get('author', ''),
+                      data.get('subreddit', ''),
+                      _parse_int(data.get('downs', '0'), 0),
+                      _parse_int(data.get('ups', '0'), 0),
+                      _parse_int(data.get('created', '0'), 0),
+                      data.get('title', ''),
+                      data.get('content', ''),
+                      data.get('is_nsfw', False),
+                      data.get('is_url', False))
+    return postObject;
+
+
+def comments_to_json(comments):
+    return {"comments": map(Comment._to_json, comments)}
 
 
 def _get_comments_request(post, sort_mode, max_depth, max_breadth):
