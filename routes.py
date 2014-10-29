@@ -5,6 +5,14 @@ from flask import request
 from weatherservice import weatherservice
 from reddit import reddit as red
 
+import logging
+logging.basicConfig(
+    level=logging.WARNING,
+    format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+    datefmt='%Y%m%d-%H:%M%p',
+)
+
+
 weatherservice.connect()
 app = Flask(__name__)
 weatherReport = "";
