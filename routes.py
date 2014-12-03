@@ -5,6 +5,7 @@ from flask import request
 from weatherservice import weatherservice
 from reddit import reddit as red
 from stockservice import stockservice
+from twitterservice import twitter as twitterservice
 
 #Uncomment these next lines for logging on the think.cs.vt.edu server.
 #import logging
@@ -122,7 +123,17 @@ def stocks():
     except stockservice.StockServiceException:
         return jsonify(stockReport="")
     
+@app.route('/twitter')
+def twitter():
+    twitterservice.connect()
+    tweetsList = twitterservice.search("hunger games since:2014-11-30 until:2014-12-01")
 
+    tweet = tweetsList[0]
+    twitterReport = {'twitterValue': tweet.text}
+    app.logger.debug(twitterReport)
+
+
+    return jsonify(twitterReport=twitterReport)
 
 
 
