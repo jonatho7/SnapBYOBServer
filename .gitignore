@@ -1,2 +1,13 @@
-.DS_Store
+
+#The Snap Repository.
 static/Snap
+
+#binary files.
+*.pyc
+
+#IntelliJ IDE files.
+.idea/
+
+
+#other files.
+.DS_Store

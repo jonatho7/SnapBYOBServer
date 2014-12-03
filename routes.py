@@ -1,21 +1,48 @@
 from flask import Flask, abort, redirect, url_for, json
-from flask import render_template
+from flask import render_template, make_response
 from flask import jsonify
 from flask import request
 from weatherservice import weatherservice
 from reddit import reddit as red
+from stockservice import stockservice
 
-import logging
-logging.basicConfig(
-    level=logging.WARNING,
-    format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-    datefmt='%Y%m%d-%H:%M%p',
-)
+#Uncomment these next lines for logging on the think.cs.vt.edu server.
+#import logging
+#logging.basicConfig(
+#    level=logging.WARNING,
+#    format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+#    datefmt='%Y%m%d-%H:%M%p',
+#)
 
+from functools import wraps, update_wrapper
+from datetime import datetime
 
 weatherservice.connect()
 app = Flask(__name__)
 weatherReport = "";
+
+#For caching.
+@app.after_request
+def add_header(response):
+    response.headers['Last-Modified'] = datetime.now()
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
+
+
+#(Start) Helper methods.
+
+#If the current time that the user gets the weather report
+#is at night, then forecasts will not have a "This Afternoon"
+#and a "Tonight" forecast, but will only have a "Tonight"
+#forecast. To fix this, the "Tonight" forecast will be copied
+#and inserted at the beginning of the list.
+def adjustForecastsForTime(forecasts):
+    if (forecasts[0].get('period_name') == "Tonight"):
+        forecasts.insert(0, forecasts[0])
+        
+#(End) helper methods.
 
 @app.route('/')
 def index():
@@ -55,20 +82,6 @@ def google():
 def fakeWeather():
     return jsonify(temp=53)
     
-    
-    
-#jsonify example
-
-# This is a dummy list, 2 nested arrays containing some
-# params and values
-#list = [
-#    {'param': 'foo', 'val': 2},
-#    {'param': 'bar', 'val': 10}
-#
-# jsonify will do for us all the work, returning the
-# previous data structure in JSON
-#return jsonify(results=list)
-
 
 @app.route('/weather')
 def weather():
@@ -76,6 +89,11 @@ def weather():
     weatherReport = weatherservice.get_report(locationString)
     #Logging posts will show up in terminal that Python Flask is running in.
     app.logger.debug(locationString)
+    
+    #Adjust the forecast for the user's query time.
+    forecasts = weatherReport.get('forecasts')
+    adjustForecastsForTime(forecasts)
+    
     return jsonify(weatherReport=weatherReport)
     
 @app.route('/redditPosts')
@@ -94,6 +112,18 @@ def redditComments():
     commentsJson = red.comments_to_json(commentsList)
     return jsonify(redditReport=commentsJson)
     #TODO. Can I return without using jsonify, bc it is already in json format?
+
+@app.route('/stocks')
+def stocks():
+    try:
+        stockQuery = str(request.args.get('stockQuery'))
+        stockReport = stockservice.get_stock_information(stockQuery)
+        return jsonify(stockReport=stockReport)
+    except stockservice.StockServiceException:
+        return jsonify(stockReport="")
+    
+
+
 
 
 if __name__ == '__main__':
