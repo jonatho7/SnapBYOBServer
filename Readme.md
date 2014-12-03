@@ -5,9 +5,12 @@ libraries integrated into the Snap! platform.
 
 
 
+The modified Snap! project repository should be located in "static/Snap".
+Since this is a separate git repository which is also managed separately,
+it is not shown in this repository, and needs to be retrieved separately.
 
 
-Development Notes:
+Development Notes (local development):
 How to start up Snap!
 
 1. In cmd prompt, enter:
