@@ -6,6 +6,7 @@ from weatherservice import weatherservice
 from reddit import reddit as red
 from stockservice import stockservice
 from twitterservice import twitter as twitterservice
+from twitterservice import twitterHelperMethods as twitterHelpers
 
 #Uncomment these next lines for logging on the think.cs.vt.edu server.
 #import logging
@@ -125,14 +126,29 @@ def stocks():
     
 @app.route('/twitter')
 def twitter():
-    twitterservice.connect()
-    tweetsList = twitterservice.search("hunger games since:2014-11-30 until:2014-12-01")
+    #Get the request parameters.
+    twitterFactor = str(request.args.get('twitterFactor'))
+    twitterQuery = str(request.args.get('twitterQuery'))
 
-    tweet = tweetsList[0]
-    twitterReport = {'twitterValue': tweet.text}
+    #Have twitter connect and run the search.
+    twitterservice.connect()
+    tweetsList = twitterservice.search(twitterQuery)
+    twitterValue = ""
+
+    if twitterFactor == "favorites":
+        twitterValue = twitterHelpers.get_num_favorites(tweetsList)
+    elif twitterFactor == "retweets":
+        twitterValue = twitterHelpers.get_num_retweets(tweetsList)
+    elif twitterFactor == "from person" or twitterFactor == "to person" or twitterFactor == "referencing person":
+        twitterValue = len(tweetsList)
+
+
+
+    #Form the response.
+    twitterReport = {'twitterValue': twitterValue}
     app.logger.debug(twitterReport)
 
-
+    #Return the results.
     return jsonify(twitterReport=twitterReport)
 
 

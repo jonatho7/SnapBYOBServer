@@ -11,3 +11,4 @@ static/Snap
 
 #other files.
 .DS_Store
+twitterservice/sampleUsage.py
