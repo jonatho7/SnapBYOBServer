@@ -1,4 +1,7 @@
 #sampleUsage of reddit CORGIS library.
+import sampleRedditService as reddit
+from msvcrt import getch
+
 
 def printPostInformation(post):
 	print("title: ", post.title )
@@ -56,9 +59,6 @@ def recursivelyPrintComments(comments):
 			#Break down into further comments.
 			recursivelyPrintComments(comment.replies)
 
-			
-import reddit
-from msvcrt import getch
 
 print("Started sampleUsage file")
 postIndex = 0;
@@ -130,4 +130,3 @@ print(commentsJson)
 
 print()
 print("Program is finished.")
-pressAnyKeyToExit = getch()
