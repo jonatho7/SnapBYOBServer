@@ -19,9 +19,41 @@ from twitterservice import twitterHelperMethods as twitterHelpers
 from functools import wraps, update_wrapper
 from datetime import datetime
 
+
+import sys
+HEADER = {'User-Agent': 'CORGIS Weather library for educational purposes'}
+PYTHON_3 = sys.version_info >= (3, 0)
+
+if PYTHON_3:
+    #from urllib.error import HTTPError
+    import urllib.request as request
+    #from urllib.parse import quote_plus
+else:
+    #from urllib2 import HTTPError
+    import urllib2
+    #from urllib import quote_plus
+
+
+
+
+
+
+
+
+
 weatherservice.connect()
 app = Flask(__name__)
 weatherReport = "";
+
+
+
+
+
+
+
+
+
+
 
 #For caching.
 @app.after_request
@@ -31,6 +63,12 @@ def add_header(response):
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
+
+
+
+
+
+
 
 
 #(Start) Helper methods.
@@ -43,8 +81,33 @@ def add_header(response):
 def adjustForecastsForTime(forecasts):
     if (forecasts[0].get('period_name') == "Tonight"):
         forecasts.insert(0, forecasts[0])
-        
+
+
+def _get(urlString):
+    """
+    Internal method to convert a URL into it's response (a *str*).
+
+    :param str urlString: the url to request a response from
+    :returns: the *str* response
+    """
+    if PYTHON_3:
+        req = request.Request(urlString, headers=HEADER)
+        response = request.urlopen(req)
+        return response.read().decode('utf-8')
+    else:
+        req = urllib2.Request(urlString, headers=HEADER)
+        response = urllib2.urlopen(req)
+        return response.read()
+
+
+
+
 #(End) helper methods.
+
+
+
+
+
 
 @app.route('/')
 def index():
@@ -142,14 +205,35 @@ def twitter():
     elif twitterFactor == "from person" or twitterFactor == "to person" or twitterFactor == "referencing person":
         twitterValue = len(tweetsList)
 
-
-
     #Form the response.
     twitterReport = {'twitterValue': twitterValue}
     app.logger.debug(twitterReport)
 
     #Return the results.
     return jsonify(twitterReport=twitterReport)
+
+@app.route('/urlRequestForClient')
+def urlRequestForClient():
+    #Get the request parameters.
+    urlString = str(request.args.get('urlString'))
+    app.logger.debug(urlString)
+
+    #responseValue = "helloski"
+    newURLString = "http://" + urlString
+
+    responseValue =  _get(newURLString)
+
+    #Form the response.
+    urlReport = {'responseValue': responseValue}
+    app.logger.debug(urlReport)
+
+    #Return the results.
+    return jsonify(urlReport=urlReport)
+
+
+
+
+
 
 
 
