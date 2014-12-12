@@ -219,9 +219,12 @@ def urlRequestForClient():
     app.logger.debug(urlString)
 
     #responseValue = "helloski"
+    #newURLString = "https://" + urlString
     newURLString = "http://" + urlString
 
-    responseValue =  _get(newURLString)
+    rawResponseValue = _get(newURLString)
+
+    responseValue = removeUnwantedCharacters(rawResponseValue)
 
     #Form the response.
     urlReport = {'responseValue': responseValue}
@@ -231,8 +234,16 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
+def removeUnwantedCharacters(rawResponseValue):
+    responseValue = ""
+    firstCurly = rawResponseValue.find("{")
+    firstBracket = rawResponseValue.find("[")
 
-
+    if (firstCurly < firstBracket):
+        responseValue = rawResponseValue[firstCurly:]
+    else:
+        responseValue = rawResponseValue[firstBracket:]
+    return responseValue
 
 
 
