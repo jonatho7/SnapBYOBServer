@@ -1,6 +1,9 @@
 
-#The Snap Repository.
+#The Snap (jonatho7's) GitHub Repository.
 static/Snap
+
+#The Snap-Sample-Projects GitHub Repository
+static/Snap-Sample-Projects
 
 #binary files.
 *.pyc
