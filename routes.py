@@ -7,14 +7,15 @@ from reddit import reddit as red
 from stockservice import stockservice
 from twitterservice import twitter as twitterservice
 from twitterservice import twitterHelperMethods as twitterHelpers
+from locationservice import locationservice
 
-#Uncomment these next lines for logging on the think.cs.vt.edu server.
-#import logging
-#logging.basicConfig(
+# Uncomment these next lines for logging on the think.cs.vt.edu server.
+# import logging
+# logging.basicConfig(
 #    level=logging.WARNING,
 #    format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
 #    datefmt='%Y%m%d-%H:%M%p',
-#)
+# )
 
 from functools import wraps, update_wrapper
 from datetime import datetime
@@ -25,13 +26,13 @@ HEADER = {'User-Agent': 'CORGIS Weather library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
 if PYTHON_3:
-    #from urllib.error import HTTPError
+    # from urllib.error import HTTPError
     import urllib.request as request
-    #from urllib.parse import quote_plus
+    # from urllib.parse import quote_plus
 else:
-    #from urllib2 import HTTPError
+    # from urllib2 import HTTPError
     import urllib2
-    #from urllib import quote_plus
+    # from urllib import quote_plus
 
 
 
@@ -55,7 +56,7 @@ weatherReport = "";
 
 
 
-#For caching.
+# For caching.
 @app.after_request
 def add_header(response):
     response.headers['Last-Modified'] = datetime.now()
@@ -71,13 +72,13 @@ def add_header(response):
 
 
 
-#(Start) Helper methods.
+# (Start) Helper methods.
 
-#If the current time that the user gets the weather report
-#is at night, then forecasts will not have a "This Afternoon"
-#and a "Tonight" forecast, but will only have a "Tonight"
-#forecast. To fix this, the "Tonight" forecast will be copied
-#and inserted at the beginning of the list.
+# If the current time that the user gets the weather report
+# is at night, then forecasts will not have a "This Afternoon"
+# and a "Tonight" forecast, but will only have a "Tonight"
+# forecast. To fix this, the "Tonight" forecast will be copied
+# and inserted at the beginning of the list.
 def adjustForecastsForTime(forecasts):
     if (forecasts[0].get('period_name') == "Tonight"):
         forecasts.insert(0, forecasts[0])
@@ -211,6 +212,17 @@ def twitter():
 
     #Return the results.
     return jsonify(twitterReport=twitterReport)
+
+@app.route('/location')
+def location():
+    # Get the request parameters.
+    address = str(request.args.get('address'))
+
+    # Get the latitude and longitude values.
+    locationReport = locationservice.get_lat_and_long(address)
+    return jsonify(locationReport=locationReport)
+
+
 
 @app.route('/urlRequestForClient')
 def urlRequestForClient():
