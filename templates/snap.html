@@ -24,7 +24,7 @@
         <script type="text/javascript" src="static/GoogleMaps/maps_googleapis.js"></script> <!--https://maps.googleapis.com/maps/api/js-->
         <script type="text/javascript" src="static/GoogleMaps/jsonData.js"></script>
         <script>
-            var map;
+            var googleMap;
 
             function initialize() {
                 var mapOptions = {
@@ -32,15 +32,15 @@
                     center: {lat: -14.7072629, lng: 19.4962294},
                     mapTypeId: google.maps.MapTypeId.TERRAIN
                 };
-                map = new google.maps.Map(document.getElementById('map-canvas'),
+                googleMap = new google.maps.Map(document.getElementById('map-canvas'),
                         mapOptions);
 
 
 
                 //Load the json data.
-                map.data.addGeoJson(earthquakeJSON);
+                googleMap.data.addGeoJson(earthquakeJSON);
 
-                map.data.setStyle(function(feature) {
+                googleMap.data.setStyle(function(feature) {
                     var magnitude = feature.getProperty('mag');
                     return {
                         icon: getCircle(magnitude)
@@ -58,7 +58,6 @@
                     };
                     return circle;
                 }
-
 
             }
 
