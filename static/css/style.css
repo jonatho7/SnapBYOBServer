@@ -1,8 +1,12 @@
 
-.mapWidthTitle, .mapHeightTitle {
+.mapWidthTitle, .mapHeightTitle, .mapSizeTitle {
     display: inline;
 }
 
 .mapWidth, .mapHeight {
     width: 60px;
+}
+
+.mapWidthTitle {
+    margin-left: 20px;
 }
