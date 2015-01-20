@@ -1,0 +1,8 @@
+
+.mapWidthTitle, .mapHeightTitle {
+    display: inline;
+}
+
+.mapWidth, .mapHeight {
+    width: 60px;
+}

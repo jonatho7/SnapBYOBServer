@@ -20,6 +20,16 @@
 		<script type="text/javascript" src="static/Snap/cloud.js"></script>
 		<script type="text/javascript" src="static/Snap/sha512.js"></script>
 
+        <!--Load jQuery.-->
+        <script type="text/javascript" src="static/js/jquery-1.11.1.min.js"></script>
+
+        <!--Custom JS added to project.-->
+        <script type="text/javascript" src="static/Snap/controlScripts.js"></script>
+
+        <!--Custom CSS added to project-->
+        <link href="static/css/style.css" rel="stylesheet">
+
+
         <!--Google Maps-->
         <script type="text/javascript" src="static/GoogleMaps/maps_googleapis.js"></script> <!--https://maps.googleapis.com/maps/api/js-->
         <script type="text/javascript" src="static/GoogleMaps/jsonData.js"></script>
@@ -72,7 +82,7 @@
 		<script type="text/javascript">
 			var world;
 			window.onload = function () {
-				world = new WorldMorph(document.getElementById('world'));
+                world = new WorldMorph(document.getElementById('world'));
                 world.worldCanvas.focus();
 				new IDE_Morph().openIn(world);
 
@@ -88,12 +98,33 @@
 
 	</head>
 	<body style="margin: 0;">
-		<canvas id="world" tabindex="1"></canvas>
 
-        <div style="width: 1200px; height: 675px;">
-            <div id="map-canvas" style="height: 100%;">
+        <canvas id="world" tabindex="1"></canvas>
+
+
+        <div style="padding: 10px 30px;">
+            <div>
+                <p class="mapWidthTitle"><strong>Map Width: </strong></p>
+                <input class="mapWidth" type="text" required="" name="mapWidth" value="1024">
+                <p class="mapHeightTitle"><strong>Map Height: </strong></p>
+                <input class="mapHeight" type="text" required="" name="mapHeight" value="768">
+
+                <button type="button" class="changeMapSizeButton">Go</button>
+            </div>
+
+            <div id="map-canvas" style="width: 1000px; height: 562px; margin-top: 30px;">
             </div>
         </div>
+
+
+
+
+
+
+
+
+        <!--Div at the bottom for some extra space.-->
+        <div style="height: 40px;"></div>
 
     </body>
 </html>
