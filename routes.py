@@ -8,6 +8,7 @@ from stockservice import stockservice
 from twitterservice import twitter as twitterservice
 from twitterservice import twitterHelperMethods as twitterHelpers
 from locationservice import locationservice
+from earthquakes import earthquakes as earthquakeservice
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
 # import logging
@@ -223,15 +224,14 @@ def location():
     return jsonify(locationReport=locationReport)
 
 @app.route('/earthquakes')
-def location():
+def earthquakes():
     # Get the request parameters.
-    earthquakeQuery = str(request.args.get('earthquakeQuery'))
     earthquakePeriod = str(request.args.get('earthquakePeriod'))
 
     # Get the latitude and longitude values.
-    # locationReport = locationservice.get_lat_and_long(address)
-    # return jsonify(locationReport=locationReport)
-    return 50
+    earthquakeReport = earthquakeservice.get_report(earthquakePeriod, 'all')
+    return jsonify(earthquakeReport=earthquakeReport)
+    # return 50
 
 
 
