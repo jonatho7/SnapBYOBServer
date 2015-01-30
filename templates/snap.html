@@ -45,11 +45,20 @@
                 var mapOptions = {
                     zoom: 2,
                     center: {lat: -14.7072629, lng: 19.4962294},
-                    mapTypeId: google.maps.MapTypeId.TERRAIN
+                    mapTypeId: google.maps.MapTypeId.TERRAIN,
+                    scaleControl: true
                 };
                 googleMap = new google.maps.Map(document.getElementById('map-canvas'),
                         mapOptions);
 
+                //Set the scale to miles instead of km.
+                var scaleInterval = setInterval(function() {
+                  var scale = $(".gm-style-cc:not(.gmnoprint):contains(' km')");
+                  if (scale.length) {
+                    scale.click();
+                    clearInterval(scaleInterval);
+                  }
+                }, 100);
 
 
                 //Load the json data.
