@@ -222,6 +222,17 @@ def location():
     locationReport = locationservice.get_lat_and_long(address)
     return jsonify(locationReport=locationReport)
 
+@app.route('/earthquakes')
+def location():
+    # Get the request parameters.
+    earthquakeQuery = str(request.args.get('earthquakeQuery'))
+    earthquakePeriod = str(request.args.get('earthquakePeriod'))
+
+    # Get the latitude and longitude values.
+    # locationReport = locationservice.get_lat_and_long(address)
+    # return jsonify(locationReport=locationReport)
+    return 50
+
 
 
 @app.route('/urlRequestForClient')
