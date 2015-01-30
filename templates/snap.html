@@ -34,10 +34,6 @@
         <!--Using my key, but only allowing certain websites to use this specific key.-->
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDIh3KocIcco9npZsjy9C1GqVjWz_XCjM"></script>
 
-        <!--Saved offline version...not sure if this would work.-->
-        <!--<script type="text/javascript" src="static/GoogleMaps/maps_googleapis.js"></script>-->
-
-        <script type="text/javascript" src="static/GoogleMaps/jsonData.js"></script>
         <script>
             var googleMap;
 
@@ -59,29 +55,6 @@
                     clearInterval(scaleInterval);
                   }
                 }, 100);
-
-
-                //Load the json data.
-                googleMap.data.addGeoJson(earthquakeJSON);
-
-                googleMap.data.setStyle(function(feature) {
-                    var magnitude = feature.getProperty('mag');
-                    return {
-                        icon: getCircle(magnitude)
-                    };
-                });
-
-                function getCircle(magnitude) {
-                    var circle = {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        fillColor: 'red',
-                        fillOpacity: .2,
-                        scale: Math.pow(2, magnitude) / 2,
-                        strokeColor: 'white',
-                        strokeWeight: .5
-                    };
-                    return circle;
-                }
 
             }
 
