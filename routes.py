@@ -120,13 +120,18 @@ def index():
 def hello(name=None):
     return render_template('hello.html', name=name)
 
-@app.route('/welcome')
-def welcome():
-    return render_template('welcome.html')
-
 @app.route('/snap')
 def snap():
     return render_template('snap.html')
+
+@app.route('/snapcustom')
+def snap_custom():
+    return render_template('snapcustom.html')
+
+@app.route('/iteration')
+def iteration():
+    return render_template('iteration.html')
+
 
 
 #This does not work.
