@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+    <head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <title>Welcome to Snap!</title>
+
+        <!--Load jQuery.-->
+        <script type="text/javascript" src="../static/js/jquery-1.11.1.min.js"></script>
+
+        <!--Custom JS added to project.-->
+        <script type="text/javascript" src="../static/Snap/controlScripts.js"></script>
+
+    </head>
+
+
+    <body>
+		<h1>Iteration</h1>
+        <p>Iteration is a very valuable technique which can let a user repeat a specific set of commands in order to achieve their goal. Iteration can be used to repeat the same set of commands once, twice, hundreds, or even thousands of times so that the user does not have to keep entering in the same code over and over again. A few examples of using iteration are:</p>
+        <ul>
+            <li>Repeatedly adding together a student’s grades from a gradebook to receive the total and then dividing the total by the number of assignments to calculate the average grade.</li>
+            <li>Repeatedly printing out the magnitude of each of the world’s earthquakes that have occurred in the past day or week. </li>
+        </ul>
+
+        <br>
+        <p><b>Iteration</b> is defined as:</p>
+        <p style="margin-left: 30px;">“the act of repeating a process with the aim of approaching a desired goal, target or result.” [1]</p>
+        <p>Furthermore,</p>
+        <p style="margin-left: 30px;">“Each repetition of the process is also called an iteration, and the results of one iteration are used as the starting point for the next iteration.” [1]</p>
+
+        <br>
+        <p>Description of for loops.</p>
+        <p>Description of while loops.</p>
+
+        <br>
+        <p>In part 1 of this example, first a program without iteration will be shown. Then in part 2 and 3, programs with iteration will be shown which will demonstrate the usefulness of using iteration. Specifically, iteration will be used to repeat a command hundreds of times. Next, you will solve a few iteration problems on your own.</p>
+
+
+        <br>
+        <br>
+        <h2>Part 1</h2>
+        <p>This program retrieves from the U.S. Geological Survey the number of earthquakes that have occurred in the past day and then prints out this number. Then, it prints out the magnitude of each of the first five earthquakes, waiting 1/2 second between each print. Since iteration is not used in this example, you will notice that the same command is repeated five times.</p>
+        <iframe id="myFrame" src="http://127.0.0.1:5000/examplesSnapIteration#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart1.xml" width="1204" height="504" style="margin: 0px 10px;">
+            This is an iFrame. If you see this message, it is still loading.
+        </iframe>
+
+
+        <br><br><br><br><br><br>
+
+        <br>
+        <br>
+        <h2>Part 2</h2>
+        <p>This program produces the exact same results as the program in Part 1. However, notice instead of having 5 separate commands which print out the magnitude, there is only one command shown which prints out the magnitude. This command is repeated 5 times through the use of the <b>for loop</b> control block. Using a for loop is especially useful when you need to repeat a command many times, as you will see in Part 3.</p>
+        <iframe id="myFrame" src="http://127.0.0.1:5000/examplesSnapIteration#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart2.xml" width="1204" height="504">
+            This is an iFrame. If you see this message, it is still loading.
+        </iframe>
+
+        <br><br><br><br><br><br>
+
+        <br>
+        <br>
+        <h2>Part 3</h2>
+        <p>Instead of only printing out the magnitudes of the first earthquakes, this program prints out the magnitude for every single earthquake that occured in the past day. This number can usually be over 80+ earthquakes. This example especially shows the power of iteration. Instead of manually adding the same command 80+ times, this command could be written once, and repeated easily with the use of iteration.</p>
+        <iframe id="myFrame" src="http://127.0.0.1:5000/examplesSnapIteration#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart3.xml" width="1204" height="504">
+            This is an iFrame. If you see this message, it is still loading.
+        </iframe>
+
+
+        <h3>What is needed?</h3>
+        <p>Need a console to print to.</p>
+        <p>Need a print command, instead of the "Say" command</p>
+        <p>Minimize the distracting stage.</p>
+        <p>Get rid of all extraneous categories and blocks.</p>
+
+        <!--Div at the bottom for some extra space.-->
+        <div style="height: 100px;"></div>
+
+    </body>
+</html>
