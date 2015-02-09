@@ -120,7 +120,7 @@ def _get(urlString):
 
 @app.route('/')
 def index():
-    return render_template('main/home.html')
+    return render_template('main/home.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/learn')
 def learn():
