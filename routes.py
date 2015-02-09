@@ -124,14 +124,17 @@ def hello(name=None):
 def snap():
     return render_template('snap.html')
 
-@app.route('/snapcustom')
-def snap_custom():
-    return render_template('snapcustom.html')
+@app.route('/examples/iteration')
+def examplesIteration():
+    return render_template('examplesIteration.html')
 
-@app.route('/iteration')
-def iteration():
-    return render_template('iteration.html')
+@app.route('/examplesSnapIteration')
+def examplesSnapIteration():
+    return render_template('examplesSnapIteration.html')
 
+@app.route('/examples/calculation')
+def examplesCalculation():
+    return render_template('calculation.html')
 
 
 #This does not work.
