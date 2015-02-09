@@ -4,7 +4,7 @@
 
 This is the main repository for the custom implementation of the open-source Snap! platform. This version of Snap! will add real-time and big-data libraries into the Snap! platform.
 
-## Hosted Site: http://think.cs.vt.edu/snap/snap
+## Hosted Site: http://think.cs.vt.edu/snap/
 
 ### Examples: 
   - Stocks Example http://think.cs.vt.edu/snap/snap#open:http://think.cs.vt.edu/snap/static/Snap-Sample-Projects/Stocks.xml
