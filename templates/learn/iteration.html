@@ -46,7 +46,7 @@
 
         <h2>Part 1</h2>
         <p class="textArea">This program retrieves from the U.S. Geological Survey the number of earthquakes that have occurred in the past day and then prints out this number. Then, it prints out the magnitude of each of the first five earthquakes, waiting 1/2 second between each print. Since iteration is not used in this example, you will notice that the same command is repeated five times.</p>
-        <iframe id="myFrame" src="http://127.0.0.1:5000/learnIterationSnap#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart1.xml" width="1204" height="504" style="margin: 0px 10px;">
+        <iframe id="myFrame" src="{{ url_for('learnIterationSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/IterationEarthquakesPart1.xml" width="1204" height="504" style="margin: 0px 10px;">
             This is an iFrame. If you see this message, it is still loading.
         </iframe>
 
@@ -56,7 +56,7 @@
 
         <h2>Part 2</h2>
         <p class="textArea">This program produces the exact same results as the program in Part 1. However, notice instead of having 5 separate commands which print out the magnitude, there is only one command shown which prints out the magnitude. This command is repeated 5 times through the use of the <b>for loop</b> control block. Using a for loop is especially useful when you need to repeat a command many times, as you will see in Part 3.</p>
-        <iframe id="myFrame" src="http://127.0.0.1:5000/learnIterationSnap#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart2.xml" width="1204" height="504">
+        <iframe id="myFrame" src="{{ url_for('learnIterationSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/IterationEarthquakesPart2.xml" width="1204" height="504" style="margin: 0px 10px;">
             This is an iFrame. If you see this message, it is still loading.
         </iframe>
 
@@ -65,7 +65,7 @@
 
         <h2>Part 3</h2>
         <p class="textArea">Instead of only printing out the magnitudes of the first earthquakes, this program prints out the magnitude for every single earthquake that occured in the past day. This number can usually be over 80+ earthquakes. This example especially shows the power of iteration. Instead of manually adding the same command 80+ times, this command could be written once, and repeated easily with the use of iteration.</p>
-        <iframe id="myFrame" src="http://127.0.0.1:5000/learnIterationSnap#open:http://127.0.0.1:5000/static/Snap-Sample-Projects/IterationEarthquakesPart3.xml" width="1204" height="504">
+        <iframe id="myFrame" src="{{ url_for('learnIterationSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/IterationEarthquakesPart3.xml" width="1204" height="504" style="margin: 0px 10px;">
             This is an iFrame. If you see this message, it is still loading.
         </iframe>
 
