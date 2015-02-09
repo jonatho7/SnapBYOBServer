@@ -113,45 +113,50 @@ def _get(urlString):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('main/index.html')
 
-@app.route('/hello/')
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('hello.html', name=name)
+@app.route('/home')
+def home():
+    return render_template('main/home.html')
 
+@app.route('/learn')
+def learn():
+    return render_template('main/learn.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
+
+# Learn Category
 @app.route('/snap')
 def snap():
     return render_template('snap.html')
 
-@app.route('/examples/iteration')
-def examplesIteration():
-    return render_template('examplesIteration.html')
+@app.route('/learn/iteration')
+def learnIteration():
+    return render_template('learn/iteration.html')
 
-@app.route('/examplesSnapIteration')
-def examplesSnapIteration():
-    return render_template('examplesSnapIteration.html')
-
-@app.route('/examples/calculation')
-def examplesCalculation():
-    return render_template('calculation.html')
+@app.route('/learnIterationSnap')
+def learnIterationSnap():
+    return render_template('learn/iterationSnap.html')
 
 
-#This does not work.
-@app.route('/snapredirect')
-def snapredirect():
-    return redirect("http://127.0.0.1:5000/templates/welcome.html", code=302)
 
-#This does not work either.
-@app.route('/renderTemplateInStaticFolder')
-def renderTemplateInStaticFolder():
-    return render_template('static/welcoming.html')
+# Testing
+@app.route('/hello/')
+@app.route('/hello/<name>')
+def hello(name=None):
+    return render_template('test/hello.html', name=name)
 
 
-@app.route('/google')
-def google():
-    return redirect("http://www.google.com", code=302)
 
+# Internal API Calls.
 
 @app.route('/fakeWeather')
 def fakeWeather():
@@ -265,6 +270,7 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
+# Helper Methods
 def removeUnwantedCharacters(rawResponseValue):
     responseValue = ""
     firstCurly = rawResponseValue.find("{")
