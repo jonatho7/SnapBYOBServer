@@ -1,3 +1,15 @@
+############ START CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
+SERVER_URL_BASE = "http://think.cs.vt.edu/snap"
+LOCAL_URL_BASE = "http://127.0.0.1:5000"
+
+
+SITE_URL_BASE = SERVER_URL_BASE
+# SITE_URL_BASE = LOCAL_URL_BASE
+
+############ END CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
+
+
+
 from flask import Flask, abort, redirect, url_for, json
 from flask import render_template, make_response
 from flask import jsonify
@@ -34,11 +46,6 @@ else:
     # from urllib2 import HTTPError
     import urllib2
     # from urllib import quote_plus
-
-
-
-
-
 
 
 
@@ -126,7 +133,6 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('main/contact.html')
-
 
 
 # Learn Category
