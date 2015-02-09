@@ -124,29 +124,29 @@ def index():
 
 @app.route('/learn')
 def learn():
-    return render_template('main/learn.html')
+    return render_template('main/learn.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/about')
 def about():
-    return render_template('main/about.html')
+    return render_template('main/about.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/contact')
 def contact():
-    return render_template('main/contact.html')
+    return render_template('main/contact.html', SITE_URL_BASE=SITE_URL_BASE)
 
 
 # Learn Category
 @app.route('/snap')
 def snap():
-    return render_template('snap.html')
+    return render_template('snap.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/learn/iteration')
 def learnIteration():
-    return render_template('learn/iteration.html')
+    return render_template('learn/iteration.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/learnIterationSnap')
 def learnIterationSnap():
-    return render_template('learn/iterationSnap.html')
+    return render_template('learn/iterationSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
 
 
