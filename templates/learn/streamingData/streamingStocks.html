@@ -17,14 +17,18 @@
 
 
     <body>
-		<h1>Streaming Data - Stock Market Data</h1>
 
-        <div class="textArea">
-            <p>Working with high-velocity data (data that updates frequently, perhaps every 30 seconds)</p>
+        <div style="margin-left: 10px;">
+            <h1>Streaming Data - Stock Market Data</h1>
+
+            <div class="textArea">
+                <p>Working with high-velocity data (data that updates frequently, perhaps every 30 seconds)</p>
+            </div>
+
+            <p class="textArea">This program retrieves from Google Finance the change percentage (the percentage the stock was up or down for the day) for 10 different stocks. It then divides the stocks into two categories, a list of stocks that are positive for the day and a list of stocks that are negative for the day. It then sorts these stocks. After the timer counts down for 20 seconds, the program is repeated again.</p>
+
         </div>
 
-
-        <p class="textArea">This program retrieves from Google Finance the change percentage (the percentage the stock was up or down for the day) for 10 different stocks. It then divides the stocks into two categories, a list of stocks that are positive for the day and a list of stocks that are negative for the day. It then sorts these stocks. After the timer counts down for 20 seconds, the program is repeated again.</p>
         <iframe id="myFrame" src="{{ url_for('learnStreamingDataStocksSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/streaming_stocks.xml" width="1204" height="804" style="margin: 0px 10px;">
             This is an iFrame. If you see this message, it is still loading.
         </iframe>
