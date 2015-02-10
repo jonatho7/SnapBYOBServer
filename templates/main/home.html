@@ -13,6 +13,7 @@
     <link href="{{ SITE_URL_BASE }}/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Snap CSS-->
+    <link href="{{ SITE_URL_BASE }}/static/css/font_Roboto.css" rel="stylesheet">
     <link href="{{ SITE_URL_BASE }}/static/css/snapCSS.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -51,14 +52,14 @@
 
 <div class="container">
 
-    <div>
+    <div class="textArea">
         <h2><b>Snap (Custom)</b></h2>
-        <h4>This version of Snap! will add real-time and big-data libraries into the Snap! platform.</h4>
-        <h4>This project aims to enrich the curricula of online educational programming platforms in order to convince students that studying computer science is important, relevant, and related to their day-to-day experiences.</h4>
+        <h4>This version of Snap! will add <b>real-time</b> and <b>big-data</b> libraries into the Snap! platform.</h4>
+        <h4>This project aims to enrich the curricula of online educational programming platforms in order to convince students that studying computer science is <b>important</b>, <b>relevant</b>, and <b>related</b> to their day-to-day experiences.</h4>
 
         <div class="leftPanel">
             <h5 class="panelElement">Launch a quick example built in Snap!</h5>
-            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/IterationEarthquakesPart2.xml">Launch Snap! Demo »</a></p>
+            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/Snap-Demo.xml">Launch Snap! Demo »</a></p>
             <br class="panelElement">
             <h5 class="panelElement">Launch empty Snap! window</h5>
             <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap')}}">Launch Snap! »</a></p>
@@ -83,6 +84,44 @@
         <li><h5>USGS Earthquakes Data</h5></li>
     </ul>
 
+    <div class="textArea800">
+        <br><br>
+        <h3>Enriching Online Educational Programming Platform Curricula</h3>
+        <p>One of the primary aims of this project is the enrich the curricula of online educational programming platforms.</p>
+        <p>This project will provide online programming platforms the following useful contexts in which to study computer science:</p>
+        <br>
+        <div class="contexts">
+            <h4>Contexts:</h4>
+            <ul>
+                <li><b>Learning computer science concepts</b>
+                    <ul>
+                        <li>Ex: Learning the concepts of calculation, sequence, decision, and iteration while using relevant data.</li>
+                        <li>Ex: Learning how to create and use methods or functions.</li>
+                    </ul>
+                </li>
+                <li><b>Social media data analysis</b>
+                    <ul>
+                        <li>Ex: Using Twitter to predict which upcoming movies will sell the most tickets.</li>
+                        <li>Ex: Using Reddit to determine which news stories are the most popular.</li>
+                    </ul>
+                </li>
+                <li><b>Visualizing Data</b>
+                    <ul>
+                        <li>Ex: Using Google Maps to visualize the USGS reported earthquakes.</li>
+                        <li>Ex: Using Google Maps to visualize which airports have inclement or dangerous weather conditions.</li>
+                    </ul>
+                </li>
+                <li><b>Streaming Data</b>
+                    <ul>
+                        <li>Ex: Streaming stock market data to determine which stocks are currently up or down for the day.</li>
+                        <li>Ex: Streaming stock market data to analyze a personal stock portfolio.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
     <div class="abstractDiv">
         <h3>Abstract</h3>
         <br>
@@ -90,6 +129,15 @@
         <br>
         <p>As an alternative, this project will focus on real-time and big datasets as a means of convincing introductory online learners that computing is a powerful tool for solving challenging and relevant problems across a variety of fields. The specific goal of the proposed project is to address the challenges of enriching the curricula of online educational programming platforms with real-time and big data sources by creating the necessary scaffolding and programming abstractions. The resulting methodology will enable other online educational platforms to improve their motivation and retention rates by leveraging our technology to enrich their curricula.</p>
     </div>
+
+
+
+
+
+
+
+
+
 
 
     <div class="extraSpaceAtBottom"></div>

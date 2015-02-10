@@ -1,6 +1,12 @@
 
 body {
     background-color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    color: #404040;
+}
+
+h4 {
+    font-size: 140%
 }
 
 .navbar-static-top {
@@ -13,6 +19,10 @@ body {
 
 .textArea {
     max-width: 900px;
+}
+
+.textArea800 {
+    max-width: 800px;
 }
 
 .leftPanel {
@@ -38,4 +48,16 @@ body {
 
 .extraSpaceAtBottom {
     margin-bottom: 4em;
+}
+
+.contexts li {
+    margin: 25px 0px;
+}
+
+.contexts h4 {
+    font-weight: 600;
+}
+
+.h3Div {
+    margin-left: 70px;
 }
