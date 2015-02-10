@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+    <head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <title>Welcome to Snap!</title>
+
+        <!--Load jQuery.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/js/jquery-1.11.1.min.js"></script>
+
+        <!--Custom JS added to project.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/controlScripts.js"></script>
+
+        <!--Custom CSS added to project.-->
+        <link href="{{ SITE_URL_BASE }}/static/css/snapCSS.css" rel="stylesheet">
+
+    </head>
+
+
+    <body>
+        <div style="margin-left: 10px;">
+            <h1>Visualizing Data - Earthquake Data</h1>
+            <p class="textArea">This program retrieves from the U.S. Geological Survey the number of earthquakes that have occurred within the past day. It then places a circle on the Google Map below at the longitude and latitude of each earthquake's location. The size of the circle represents the strength of each earthquake. (The magnitude of the earthquake is multiplied by 20 so that it can be seen on the map easier).</p>
+        </div>
+        
+		<iframe id="myFrame" src="{{ url_for('learnVisualizingDataEarthquakeSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/visualizingDataEarthquakes.xml" width="1204" height="1204" style="margin: 0px 10px;">
+            This is an iFrame. If you see this message, it is still loading.
+        </iframe>
+
+
+
+        <!--Div at the bottom for some extra space.-->
+        <div style="height: 100px;"></div>
+
+    </body>
+</html>

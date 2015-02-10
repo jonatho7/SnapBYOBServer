@@ -3,8 +3,8 @@ SERVER_URL_BASE = "http://think.cs.vt.edu/snap"
 LOCAL_URL_BASE = "http://127.0.0.1:5000"
 
 
-SITE_URL_BASE = SERVER_URL_BASE
-# SITE_URL_BASE = LOCAL_URL_BASE
+# SITE_URL_BASE = SERVER_URL_BASE
+SITE_URL_BASE = LOCAL_URL_BASE
 
 ############ END CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
 
@@ -156,6 +156,13 @@ def learnStreamingDataStocks():
 def learnStreamingDataStocksSnap():
     return render_template('learn/streamingData/streamingStocksSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
+@app.route('/learn/visualizingData/earthquake')
+def learnVisualizingDataEarthquake():
+    return render_template('learn/visualizingData/earthquake.html', SITE_URL_BASE=SITE_URL_BASE)
+
+@app.route('/learnVisualizingDataEarthquakeSnap')
+def learnVisualizingDataEarthquakeSnap():
+    return render_template('learn/VisualizingData/earthquakeSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
 
 
