@@ -162,7 +162,7 @@ def learnVisualizingDataEarthquake():
 
 @app.route('/learnVisualizingDataEarthquakeSnap')
 def learnVisualizingDataEarthquakeSnap():
-    return render_template('learn/VisualizingData/earthquakeSnap.html', SITE_URL_BASE=SITE_URL_BASE)
+    return render_template('learn/visualizingData/earthquakeSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
 
 
