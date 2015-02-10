@@ -148,6 +148,15 @@ def learnIteration():
 def learnIterationSnap():
     return render_template('learn/iterationSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
+@app.route('/learn/streamingData/stocks')
+def learnStreamingDataStocks():
+    return render_template('learn/streamingData/streamingStocks.html', SITE_URL_BASE=SITE_URL_BASE)
+
+@app.route('/learnStreamingDataStocksSnap')
+def learnStreamingDataStocksSnap():
+    return render_template('learn/streamingData/streamingStocksSnap.html', SITE_URL_BASE=SITE_URL_BASE)
+
+
 
 
 # Testing

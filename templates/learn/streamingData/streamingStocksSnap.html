@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Snap! Build Your Own Blocks. Beta</title>
+        <link rel="shortcut icon" href="http://snap.berkeley.edu/fav3.gif" type="image/gif">
+		<!--Changed these URLS.-->
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/morphic.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/widgets.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/blocks.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/threads.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/objects.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/gui.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/paint.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/lists.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/byob.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/xml.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/store.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/locale.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/cloud.js"></script>
+		<script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/sha512.js"></script>
+
+        <!--Load jQuery.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/js/jquery-1.11.1.min.js"></script>
+
+        <!--Custom JS added to project.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/controlScripts.js"></script>
+
+        <!--Custom CSS added to project-->
+        <link href="{{ SITE_URL_BASE }}/static/css/style.css" rel="stylesheet">
+
+
+        <!--Snap World Startup.-->
+		<script type="text/javascript">
+			var world;
+			window.onload = function () {
+                world = new WorldMorph(document.getElementById('world'), false);
+                world.worldCanvas.focus();
+				new IDE_Morph().openIn(world);
+
+                //world.isDevMode = true;
+
+				setInterval(loop, 1);
+			};
+			function loop() {
+				world.doOneCycle();
+			}
+		</script>
+
+
+	</head>
+	<body style="margin: 0;">
+
+        <canvas id="world" tabindex="1" width="1200" height="800"></canvas>
+
+
+    </body>
+</html>
