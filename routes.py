@@ -3,8 +3,8 @@ SERVER_URL_BASE = "http://think.cs.vt.edu/snap"
 LOCAL_URL_BASE = "http://127.0.0.1:5000"
 
 
-SITE_URL_BASE = SERVER_URL_BASE
-# SITE_URL_BASE = LOCAL_URL_BASE
+#SITE_URL_BASE = SERVER_URL_BASE
+SITE_URL_BASE = LOCAL_URL_BASE
 
 ############ END CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
 
@@ -21,6 +21,7 @@ from twitterservice import twitter as twitterservice
 from twitterservice import twitterHelperMethods as twitterHelpers
 from locationservice import locationservice
 from earthquakes import earthquakes as earthquakeservice
+from sheetsservice import sheetsservice
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
 # import logging
@@ -262,7 +263,25 @@ def earthquakes():
     # Get the latitude and longitude values.
     earthquakeReport = earthquakeservice.get_report(earthquakePeriod, 'all')
     return jsonify(earthquakeReport=earthquakeReport)
-    # return 50
+
+
+@app.route('/reportDataFromColumn')
+def reportDataFromColumn():
+    # Get the request parameters.
+    columnNumber = str(request.args.get('columnNumber'))
+    rowStart = str(request.args.get('rowStart'))
+    rowEnd = str(request.args.get('rowEnd'))
+    sheetNumber = str(request.args.get('sheetNumber'))
+    sheetsURL = str(request.args.get('sheetsURL'))
+
+    data = sheetsservice.get_column_data(columnNumber, rowStart, rowEnd, sheetNumber, sheetsURL)
+
+    report = {'data': data }
+
+    return jsonify(report=report)
+
+
+
 
 
 
@@ -272,7 +291,6 @@ def urlRequestForClient():
     urlString = str(request.args.get('urlString'))
     app.logger.debug(urlString)
 
-    #responseValue = "helloski"
     #newURLString = "https://" + urlString
     newURLString = "http://" + urlString
 
@@ -282,7 +300,6 @@ def urlRequestForClient():
 
     #Form the response.
     urlReport = {'responseValue': responseValue}
-    app.logger.debug(urlReport)
 
     #Return the results.
     return jsonify(urlReport=urlReport)
