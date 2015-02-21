@@ -27,12 +27,12 @@ import StringIO
 import pandas as pandas
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
-# import logging
-# logging.basicConfig(
-#    level=logging.WARNING,
-#    format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-#    datefmt='%Y%m%d-%H:%M%p',
-# )
+import logging
+logging.basicConfig(
+   level=logging.WARNING,
+   format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+   datefmt='%Y%m%d-%H:%M%p',
+)
 
 from functools import wraps, update_wrapper
 from datetime import datetime
