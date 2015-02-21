@@ -22,6 +22,9 @@ from twitterservice import twitterHelperMethods as twitterHelpers
 from locationservice import locationservice
 from earthquakes import earthquakes as earthquakeservice
 from sheetsservice import sheetsservice
+from computeservice import computeservice as computeservice
+import StringIO
+import pandas as pandas
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
 # import logging
@@ -93,6 +96,18 @@ def adjustForecastsForTime(forecasts):
         forecasts.insert(0, forecasts[0])
 
 
+def removeUnwantedCharacters(rawResponseValue):
+    responseValue = ""
+    firstCurly = rawResponseValue.find("{")
+    firstBracket = rawResponseValue.find("[")
+
+    if (firstCurly < firstBracket):
+        responseValue = rawResponseValue[firstCurly:]
+    else:
+        responseValue = rawResponseValue[firstBracket:]
+    return responseValue
+
+
 def _get(urlString):
     """
     Internal method to convert a URL into it's response (a *str*).
@@ -108,8 +123,6 @@ def _get(urlString):
         req = urllib2.Request(urlString, headers=HEADER)
         response = urllib2.urlopen(req)
         return response.read()
-
-
 
 
 #(End) helper methods.
@@ -281,10 +294,6 @@ def reportDataFromColumn():
     return jsonify(report=report)
 
 
-
-
-
-
 @app.route('/urlRequestForClient')
 def urlRequestForClient():
     #Get the request parameters.
@@ -305,18 +314,50 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
-# Helper Methods
-def removeUnwantedCharacters(rawResponseValue):
-    responseValue = ""
-    firstCurly = rawResponseValue.find("{")
-    firstBracket = rawResponseValue.find("[")
+@app.route('/computeservice/runTestCloudMethod')
+def runTestCloudCommand():
 
-    if (firstCurly < firstBracket):
-        responseValue = rawResponseValue[firstCurly:]
-    else:
-        responseValue = rawResponseValue[firstBracket:]
-    return responseValue
+    # Run the select method.
+    csv_input_string = 'fludata_small.csv'
+    csv_output_string = 'csv_output.txt'
+    condition_field = 'REGION'
+    condition_operator = '!='
+    condition_value = 'Region 2'
+    cloud_var_a = computeservice.select_method(csv_input_string, csv_output_string, condition_field, condition_operator, condition_value)
 
+    temp_var = StringIO.StringIO()
+    cloud_var_a.to_csv(temp_var)
+    csv_string = temp_var.getvalue()
+
+    report = {'data': csv_string}
+
+    return jsonify(report=report)
+
+
+@app.route('/computeservice/runTestCloudMethod2')
+def runTestCloudCommand2():
+
+    # Run the select method.
+    csv_url = 'fludata_small.csv'
+    condition_field = 'REGION'
+    condition_operator = '!='
+    condition_value = 'Region 2'
+
+    # Read in the csv file.
+    csv_dataframe = pandas.read_csv(csv_url)
+
+    # perform the select method.
+    cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+
+
+
+    temp_var = StringIO.StringIO()
+    cloud_var_a_dataframe.to_csv(temp_var)
+    csv_output_string = temp_var.getvalue()
+
+    report = {'data': csv_output_string}
+
+    return jsonify(report=report)
 
 
 
