@@ -1,6 +1,5 @@
 
-import pandas as pandas
-import numpy as np
+
 
 logger = None
 def setup_debugger(logger_reference):
@@ -10,6 +9,10 @@ def setup_debugger(logger_reference):
 
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
     logger.debug(csv_dataframe)
+
+    import pandas as pandas
+    import numpy as np
+
 
     # convert condition_value to the same type as the condition_field so comparisons can be made.
     try:
@@ -49,6 +52,9 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
 
 def get_maximum(csv_dataframe, field_name, return_type_string):
 
+    import pandas as pandas
+    import numpy as np
+    
     if not csv_dataframe.empty:
         #The dataframe is not empty.
 
