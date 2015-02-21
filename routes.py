@@ -323,7 +323,10 @@ def runTestCloudCommand2():
     computeservice.setup_debugger(app.logger)
 
     # Run the select method.
-    csv_url = 'static/sampleData/fludata_small.csv'
+    # csv_url = 'static/sampleData/fludata_small.csv'
+    # csv_url = 'http://think.cs.vt.edu/snap/static/sampleData/fludata_small.csv'
+    # csv_url = 'https://drive.google.com/file/d/0B-WWj_i0WSomYlptdDN5NFU1X0k/view?usp=sharing'. This one doesnt work.
+    csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomYlptdDN5NFU1X0k'
     condition_field = 'REGION'
     condition_operator = '!='
     condition_value = 'Region 1'
