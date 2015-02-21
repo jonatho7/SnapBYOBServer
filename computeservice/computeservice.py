@@ -2,9 +2,14 @@
 import pandas as pandas
 import numpy as np
 
+logger = None
+def setup_debugger(logger_reference):
+    global logger
+    logger = logger_reference
+
 
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
-
+    logger.debug(csv_dataframe)
 
     # convert condition_value to the same type as the condition_field so comparisons can be made.
     try:
@@ -33,37 +38,48 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     else:
         new_csv_dataframe = csv_dataframe
 
-    # Print this data to a new csv file.
-    # new_csv_dataframe.to_csv(csv_output_string, index=False)
+    #Re-index the dataframe
+    new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
+
+    # debugging.
+    logger.debug(new_csv_dataframe)
 
     return new_csv_dataframe
 
 
-def get_maximum(csv_input_string, field_name, return_type_string):
-    # Read in the csv file.
-    csv_data = pandas.read_csv(csv_input_string)
+def get_maximum(csv_dataframe, field_name, return_type_string):
 
-    # Get the index where the maximum is.
-    index_of_max = csv_data[field_name].argmax()
+    if not csv_dataframe.empty:
+        #The dataframe is not empty.
 
-    # For Minimum:
-    # index_of_max = csv_data[field_name].argmin()
+        # Get the index where the maximum is, and also get the maximum.
+        index_of_max = csv_dataframe[field_name].argmax()
+        max_value = csv_dataframe[field_name].max()
 
-    # Create a new csv variable
-    new_csv_data = csv_data[index_of_max:index_of_max+1]
+        # Create a new csv dataframe with only this result.
+        new_csv_dataframe = csv_dataframe[index_of_max:index_of_max+1]
 
-    # Print this data to a new csv file.
-    # new_csv_data.to_csv(csv_output_string, index=False)
+        #Re-index the dataframe
+        new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
-    return new_csv_data
+        if return_type_string == "entire row":
+            return new_csv_dataframe
+        elif return_type_string == "value only":
+            return max_value
+        else:
+            return "Unexpected error."
+    else:
+        # The dataframe is empty.
+        if return_type_string == "entire row":
+            return csv_dataframe
+        else:
+            return "A maximum value cannot be acquired. There are no rows of data."
 
 
-def get_average(csv_input_string, field_name):
-    # Read in the csv file.
-    csv_data = pandas.read_csv(csv_input_string)
+def get_average(csv_dataframe, field_name):
 
     # Get the average value.
-    average = csv_data[field_name].mean()
+    average = csv_dataframe[field_name].mean()
 
     return average
 

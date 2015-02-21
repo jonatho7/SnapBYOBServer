@@ -314,34 +314,16 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
-@app.route('/computeservice/runTestCloudMethod')
-def runTestCloudCommand():
-
-    # Run the select method.
-    csv_input_string = 'fludata_small.csv'
-    csv_output_string = 'csv_output.txt'
-    condition_field = 'REGION'
-    condition_operator = '!='
-    condition_value = 'Region 2'
-    cloud_var_a = computeservice.select_method(csv_input_string, csv_output_string, condition_field, condition_operator, condition_value)
-
-    temp_var = StringIO.StringIO()
-    cloud_var_a.to_csv(temp_var)
-    csv_string = temp_var.getvalue()
-
-    report = {'data': csv_string}
-
-    return jsonify(report=report)
-
-
 @app.route('/computeservice/runTestCloudMethod2')
 def runTestCloudCommand2():
+
+    computeservice.setup_debugger(app.logger)
 
     # Run the select method.
     csv_url = 'fludata_small.csv'
     condition_field = 'REGION'
     condition_operator = '!='
-    condition_value = 'Region 2'
+    condition_value = 'Region 1'
 
     # Read in the csv file.
     csv_dataframe = pandas.read_csv(csv_url)
@@ -349,14 +331,20 @@ def runTestCloudCommand2():
     # perform the select method.
     cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
 
+    # setup the variables needed for the maximum method.
+    field_name = 'ILITOTAL'
+    return_type_string = 'entire row'  # possible values: 'entire row' OR 'value only'
 
+    # perform the maximum method.
+    cloud_var_b_dataframe = computeservice.get_maximum(cloud_var_a_dataframe, field_name, return_type_string)
 
+    # convert the dataframe to a string.
     temp_var = StringIO.StringIO()
-    cloud_var_a_dataframe.to_csv(temp_var)
+    cloud_var_b_dataframe.to_csv(temp_var)
     csv_output_string = temp_var.getvalue()
 
+    # form a report and then return it.
     report = {'data': csv_output_string}
-
     return jsonify(report=report)
 
 
