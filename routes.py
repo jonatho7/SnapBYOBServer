@@ -24,7 +24,7 @@ from earthquakes import earthquakes as earthquakeservice
 from sheetsservice import sheetsservice
 from computeservice import computeservice as computeservice
 import StringIO
-import pandas as pandas
+
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
 import logging
@@ -316,6 +316,9 @@ def urlRequestForClient():
 
 @app.route('/computeservice/runTestCloudMethod2')
 def runTestCloudCommand2():
+
+    # pandas is not installed on the think server yet. So to avoid errors, I will put the import here for now.
+    import pandas as pandas
 
     computeservice.setup_debugger(app.logger)
 
