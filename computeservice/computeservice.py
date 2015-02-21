@@ -54,7 +54,7 @@ def get_maximum(csv_dataframe, field_name, return_type_string):
 
     import pandas as pandas
     import numpy as np
-    
+
     if not csv_dataframe.empty:
         #The dataframe is not empty.
 
@@ -78,8 +78,10 @@ def get_maximum(csv_dataframe, field_name, return_type_string):
         # The dataframe is empty.
         if return_type_string == "entire row":
             return csv_dataframe
-        else:
+        elif return_type_string == "value only":
             return "A maximum value cannot be acquired. There are no rows of data."
+        else:
+            return "Unexpected error."
 
 
 def get_average(csv_dataframe, field_name):
@@ -91,6 +93,8 @@ def get_average(csv_dataframe, field_name):
 
 
 def iterate(csv_input_string):
+    import pandas as pandas
+    import numpy as np
     csv_data = pandas.read_csv(csv_input_string)
 
     temp = csv_data['ILITOTAL']

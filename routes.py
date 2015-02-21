@@ -323,7 +323,7 @@ def runTestCloudCommand2():
     computeservice.setup_debugger(app.logger)
 
     # Run the select method.
-    csv_url = 'fludata_small.csv'
+    csv_url = 'static/sampleData/fludata_small.csv'
     condition_field = 'REGION'
     condition_operator = '!='
     condition_value = 'Region 1'
