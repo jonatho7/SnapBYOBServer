@@ -27,12 +27,13 @@ import StringIO
 
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
-import logging
-logging.basicConfig(
-   level=logging.WARNING,
-   format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
-   datefmt='%Y%m%d-%H:%M%p',
-)
+if SITE_URL_BASE == SERVER_URL_BASE:
+    import logging
+    logging.basicConfig(
+       level=logging.WARNING,
+       format='[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s',
+       datefmt='%Y%m%d-%H:%M%p',
+    )
 
 from functools import wraps, update_wrapper
 from datetime import datetime
@@ -326,7 +327,8 @@ def runTestCloudCommand2():
     # csv_url = 'static/sampleData/fludata_small.csv'
     # csv_url = 'http://think.cs.vt.edu/snap/static/sampleData/fludata_small.csv'
     # csv_url = 'https://drive.google.com/file/d/0B-WWj_i0WSomYlptdDN5NFU1X0k/view?usp=sharing'. This one doesnt work.
-    csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomYlptdDN5NFU1X0k'
+    # csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomYlptdDN5NFU1X0k'  # Flu Data Small CSV
+    csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
     condition_field = 'REGION'
     condition_operator = '!='
     condition_value = 'Region 1'
