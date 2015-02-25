@@ -1,15 +1,3 @@
-############ START CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
-SERVER_URL_BASE = "http://think.cs.vt.edu/snap"
-LOCAL_URL_BASE = "http://127.0.0.1:5000"
-
-
-SITE_URL_BASE = SERVER_URL_BASE
-# SITE_URL_BASE = LOCAL_URL_BASE
-
-############ END CHANGE FROM LOCAL DEVELOPMENT TO HOSTED SITE ##############
-
-
-
 from flask import Flask, abort, redirect, url_for, json
 from flask import render_template, make_response
 from flask import jsonify
@@ -25,6 +13,8 @@ from sheetsservice import sheetsservice
 from computeservice import computeservice as computeservice
 import StringIO
 import xml.etree.ElementTree as element_tree
+from server_configuration import SITE_URL_BASE, SERVER_URL_BASE, LOCAL_URL_BASE
+
 
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
