@@ -329,12 +329,15 @@ def runTestCloudMethod1():
     urlString = 'snapdev.cs.vt.edu/api/returnTestData'
 
     jsonReport = urlRequest(urlString)
-    return jsonReport
 
     # Testing purposes.
     # data = 15
     # report = {'data': data}
     # return jsonify(report=report)
+
+    return jsonReport
+
+
 
 
 @app.route('/computeservice/runTestCloudMethod2')
