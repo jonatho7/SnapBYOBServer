@@ -120,15 +120,14 @@ def _get(urlString):
 
 def urlRequest(urlString):
     newURLString = "http://" + urlString
-    rawResponseValue = _get(newURLString)
-
-    responseValue = rawResponseValue['report']['data']
+    rawResponseJSONAsString = _get(newURLString)
+    app.logger.debug(type(rawResponseJSONAsString))
 
     #Form the response.
-    report = {'data': responseValue}
+    report = {'data': rawResponseJSONAsString}
 
     #Return the results.
-    return jsonify(report=report)
+    return report
 
 
 #(End) helper methods.
@@ -323,20 +322,31 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
-@app.route('/computeservice/runTestCloudMethod1')
+@app.route('/runTestCloudMethod1')
 def runTestCloudMethod1():
     # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
     urlString = 'snapdev.cs.vt.edu/api/returnTestData'
 
-    jsonReport = urlRequest(urlString)
+    report = urlRequest(urlString)
 
     # Testing purposes.
     # data = 15
     # report = {'data': data}
     # return jsonify(report=report)
 
-    return jsonReport
+    return jsonify(report=report)
 
+
+# @app.route('/computeservice/runTestCloudMethod1')
+# def runTestCloudMethod1():
+#     report = 34
+#     return jsonify(report = report)
+#
+#     # Testing purposes.
+#     # data = 15
+#     # report = {'data': data}
+#     # return jsonify(report=report)
+#     #return jsonReport
 
 
 
