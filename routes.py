@@ -88,6 +88,7 @@ def adjustForecastsForTime(forecasts):
         forecasts.insert(0, forecasts[0])
 
 
+# This method removes unwanted characters before the { or the [ in the JSON.
 def removeUnwantedCharacters(rawResponseValue):
     responseValue = ""
     firstCurly = rawResponseValue.find("{")
@@ -283,6 +284,23 @@ def reportDataFromColumn():
 
     report = {'data': data }
 
+    return jsonify(report=report)
+
+
+@app.route('/urlRequest')
+def urlRequest():
+    # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
+    urlString = 'snapdev.cs.vt.edu/api/returnTestData'
+
+    newURLString = "http://" + urlString
+    rawResponseValue = _get(newURLString)
+
+    responseValue = rawResponseValue['report']['data']
+
+    #Form the response.
+    report = {'data': responseValue}
+
+    #Return the results.
     return jsonify(report=report)
 
 
