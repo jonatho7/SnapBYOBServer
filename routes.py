@@ -118,6 +118,19 @@ def _get(urlString):
         return response.read()
 
 
+def urlRequest(urlString):
+    newURLString = "http://" + urlString
+    rawResponseValue = _get(newURLString)
+
+    responseValue = rawResponseValue['report']['data']
+
+    #Form the response.
+    report = {'data': responseValue}
+
+    #Return the results.
+    return jsonify(report=report)
+
+
 #(End) helper methods.
 
 
@@ -287,21 +300,7 @@ def reportDataFromColumn():
     return jsonify(report=report)
 
 
-@app.route('/urlRequest')
-def urlRequest():
-    # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
-    urlString = 'snapdev.cs.vt.edu/api/returnTestData'
 
-    newURLString = "http://" + urlString
-    rawResponseValue = _get(newURLString)
-
-    responseValue = rawResponseValue['report']['data']
-
-    #Form the response.
-    report = {'data': responseValue}
-
-    #Return the results.
-    return jsonify(report=report)
 
 
 @app.route('/urlRequestForClient')
@@ -324,10 +323,22 @@ def urlRequestForClient():
     return jsonify(urlReport=urlReport)
 
 
+@app.route('/computeservice/runTestCloudMethod1')
+def runTestCloudMethod1():
+    # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
+    urlString = 'snapdev.cs.vt.edu/api/returnTestData'
+
+    jsonReport = urlRequest(urlString)
+    return jsonReport
+
+    # Testing purposes.
+    # data = 15
+    # report = {'data': data}
+    # return jsonify(report=report)
 
 
 @app.route('/computeservice/runTestCloudMethod2')
-def runTestCloudCommand2():
+def runTestCloudMethod2():
 
     # pandas is not installed on the think server yet. So to avoid errors, I will put the import here for now.
     import pandas as pandas
