@@ -35,13 +35,13 @@ HEADER = {'User-Agent': 'CORGIS Weather library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
 if PYTHON_3:
-    # from urllib.error import HTTPError
+    from urllib.error import HTTPError
     import urllib.request as request
-    # from urllib.parse import quote_plus
+    from urllib.parse import quote_plus
 else:
-    # from urllib2 import HTTPError
+    from urllib2 import HTTPError
     import urllib2
-    # from urllib import quote_plus
+    from urllib import quote_plus
 
 
 
@@ -324,8 +324,8 @@ def urlRequestForClient():
 
 @app.route('/runTestCloudMethod1')
 def runTestCloudMethod1():
-    # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
-    urlString = 'snapdev.cs.vt.edu/api/returnTestData'
+    urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
+    # urlString = 'snapdev.cs.vt.edu/api/returnTestData'
 
     report = urlRequest(urlString)
 
