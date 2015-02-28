@@ -324,10 +324,10 @@ def urlRequestForClient():
 
 @app.route('/runTestCloudMethod1')
 def runTestCloudMethod1():
-    urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
-    # urlString = 'snapdev.cs.vt.edu/api/returnTestData'
+    # urlString = 'forecast.weather.gov/MapClick.php?lat=37.2295733&lon=-80.4139393&FcstType=json'
+    urlString = 'snapdev.cs.vt.edu/api/returnTestData'
 
-    report = urlRequest(urlString)
+    report = urlRequestWithoutHeaders(urlString)
 
     # Testing purposes.
     # data = 15
@@ -335,6 +335,34 @@ def runTestCloudMethod1():
     # return jsonify(report=report)
 
     return jsonify(report=report)
+
+def urlRequestWithoutHeaders(urlString):
+    newURLString = "http://" + urlString
+    rawResponseJSONAsString = _getWithoutHeaders(newURLString)
+    app.logger.debug(type(rawResponseJSONAsString))
+
+    #Form the response.
+    report = {'data': rawResponseJSONAsString}
+
+    #Return the results.
+    return report
+
+
+def _getWithoutHeaders(urlString):
+    """
+    Internal method to convert a URL into it's response (a *str*).
+
+    :param str urlString: the url to request a response from
+    :returns: the *str* response
+    """
+    if PYTHON_3:
+        req = request.Request(urlString)
+        response = request.urlopen(req)
+        return response.read().decode('utf-8')
+    else:
+        req = urllib2.Request(urlString)
+        response = urllib2.urlopen(req)
+        return response.read()
 
 
 # @app.route('/computeservice/runTestCloudMethod1')
