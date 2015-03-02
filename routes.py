@@ -447,6 +447,15 @@ def runTestCloudMethod2():
     # return jsonify(report=report)
 
 
+@app.route('/api/returnTestData')
+def returnTestData():
+    data = 25
+    report = {'data': data }
+    return jsonify(report=report)
+
+
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
