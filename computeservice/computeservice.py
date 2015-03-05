@@ -8,7 +8,7 @@ def setup_debugger(logger_reference):
 
 
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
-    logger.debug(csv_dataframe)
+    # logger.debug(csv_dataframe)
 
     import pandas as pandas
     import numpy as np
@@ -45,7 +45,7 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
     # debugging.
-    logger.debug(new_csv_dataframe)
+    # logger.debug(new_csv_dataframe)
 
     return new_csv_dataframe
 
