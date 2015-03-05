@@ -343,78 +343,85 @@ def runTestCloudMethod1():
 
     return jsonify(report=report)
 
-def urlRequestWithoutHeaders(urlString):
-    newURLString = "http://" + urlString
-    rawResponseJSONAsString = _getWithoutHeaders(newURLString)
-    app.logger.debug(type(rawResponseJSONAsString))
-
-    #Form the response.
-    report = {'data': rawResponseJSONAsString}
-
-    #Return the results.
-    return report
-
-
-def _getWithoutHeaders(urlString):
-    """
-    Internal method to convert a URL into it's response (a *str*).
-
-    :param str urlString: the url to request a response from
-    :returns: the *str* response
-    """
-    if PYTHON_3:
-        req = request.Request(urlString)
-        response = request.urlopen(req)
-        return response.read().decode('utf-8')
-    else:
-        req = urllib2.Request(urlString)
-        response = urllib2.urlopen(req)
-        return response.read()
-
-
-# @app.route('/computeservice/runTestCloudMethod1')
-# def runTestCloudMethod1():
-#     report = 34
-#     return jsonify(report = report)
-#
-#     # Testing purposes.
-#     # data = 15
-#     # report = {'data': data}
-#     # return jsonify(report=report)
-#     #return jsonReport
-
-
 
 @app.route('/computeservice/runTestCloudMethod2')
 def runTestCloudMethod2():
-
     # pandas is not installed on the think server yet. So to avoid errors, I will put the import here for now.
     import pandas as pandas
 
+    # Setup the debugger.
     computeservice.setup_debugger(app.logger)
 
-    # Start - Testing for XML Parsing.
+    # Get the request parameters.
+    project_xml_string = str(request.args.get('project_xml_string'))
+    app.logger.debug(project_xml_string)
 
-    xml_string = '<project name="getFluPeakFor2014" app="Snap! 4.0, http://snap.berkeley.edu" version="1"><notes></notes><thumbnail>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAB4CAYAAAB1ovlvAAAFI0lEQVR4Xu2YvUuceRDHZ2OQcLuYwheOOyUEDCgB0cJo4ZEinIU2UfE66xT2QgI23omkDOG6+wNSXGHhgY2gKPgChy+HRVJoCMEmooJnIDHJhucpFpfE5GGcsJnhsyDq7m9mZz7fD8/jmisWi0XhAYEKEcghYIXI87YpAQREhIoS+KyAy8vLsrKyIsndOZfLfbPvdXV1MjIyUlEAvHllCXwi4OzsrDQ3N6umutbUKE9++1mqq3JfrL9y+ZLcerQpJycn6bmamhppaGhQvSdFvgmUCbiwsCD19fXqK96/93+RgZZ8JiKFhy9ke3s7vcIeHx9LV1dXpjoOxSJQJuD4+LgMDg6mUqyvr8v09LQkUs7Pz0tPT48sLi7K0dGRJLfovr4+6ejokHw+nz6fPJ79/qv03/gh/bnwx1N5u/iXVN++J+931+TD4Ut58/dYiV4i4MbGRkn29vb2WGTZJhOBMgHHxsZkaGgoLdzc3JTe3l6pra2VQqGQ3i4PDw/Tr+S1zs5O2d/fl0Sc5Lm9vT15/rA/FTD/YE1yV3+Ud//9I5KrkuL/r6Tqp5vy+s+7ZQKurq6WfucKmCmvcIfKBDw4OCjdFjUfQA4eD8md61cyQUqugEtLS+kVcGtrS0ZHRzPVcSgWgU8+hExOTkp3d7dqy+Tvx7a2tky1c3Nz6bnkyskn4UzIQh7i/4AhY/WzFAL6ySrkpAgYMlY/SyGgn6xCToqAIWP1sxQC+skq5KQIGDJWP0shoJ+sQk6KgCFj9bMUAvrJKuSkCBgyVj9LIaCfrEJOioAhY/WzFAL6ySrkpAgYMlY/SyGgn6xCToqAIWP1sxQC+skq5KQIGDJWP0shoJ+sQk6KgCFj9bMUAvrJKuSkCBgyVj9LIaCfrEJOioAhY/WzFAL6ySrkpAgYMlY/SyGgn6xCToqAIWP1sxQC+skq5KQIGDJWP0shoJ+sQk6KgCFj9bMUAvrJKuSkCBgyVj9LIaCfrEJOioAhY/WzFAL6ySrkpAgYMlY/SyGgn6xCToqAIWP1sxQC+skq5KQIGDJWP0shoJ+sQk6KgCFj9bMUAvrJKuSkCBgyVj9LIeA5WbW2tsrExIQMDw/7SdPhpAj4hdAGBgZKr+7s7MjMzIw0NTU5jPn7HRkBv5LNWQnPHj09PU2F5HExAgiIgBcz6ILVCJjxFry7u5te8RobGy+InPKzBBDwHB9aWlpkampKzrsFo5ENAQS04UgXJQEEVIKjzIYAAtpwpIuSAAIqwVFmQwABbTjSRUkAAZXgKLMhgIA2HOmiJICASnCU2RBAQBuOdFESQEAlOMpsCCCgDUe6KAkgoBIcZTYEENCGI12UBBBQCY4yGwIIaMORLkoCCKgER5kNAQS04UgXJQEEVIKjzIYAAtpwpIuSAAIqwVFmQwABbTjSRUkAAZXgKLMhgIA2HOmiJICASnCU2RBAQBuOdFESQEAlOMpsCCCgDUe6KAkgoBIcZTYEENCGI12UBBBQCY4yGwIIaMORLkoCCKgER5kNAQS04UgXJQEEVIKjzIYAAtpwpIuSAAIqwVFmQwABbTjSRUkAAZXgKLMhgIA2HOmiJICASnCU2RBAQBuOdFESQEAlOMpsCCCgDUe6KAkgoBIcZTYEENCGI12UBBBQCY4yGwIIaMORLkoCCKgER5kNAQS04UgXJQEEVIKjzIYAAtpwpIuSAAIqwVFmQwABbTjSRUkAAZXgKLMhgIA2HOmiJICASnCU2RBAQBuOdFES+Aiq4Ne3E8MQOwAAAABJRU5ErkJggg==</thumbnail><stage name="Stage" width="480" height="360" costume="0" tempo="60" threadsafe="false" lines="round" codify="false" scheduled="false" id="1"><pentrails>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAFoCAYAAACPNyggAAAOhUlEQVR4Xu3VwQkAAAjEMN1/abewn7jAQRC64wgQIECAAIF3gX1fNEiAAAECBAiMAHsCAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQICLAfIECAAAECgYAAB+gmCRAgQICAAPsBAgQIECAQCAhwgG6SAAECBAgIsB8gQIAAAQKBgAAH6CYJECBAgIAA+wECBAgQIBAICHCAbpIAAQIECAiwHyBAgAABAoGAAAfoJgkQIECAgAD7AQIECBAgEAgIcIBukgABAgQIHLFxAWmhEwHPAAAAAElFTkSuQmCC</pentrails><costumes><list id="2"></list></costumes><sounds><list id="3"></list></sounds><variables></variables><blocks></blocks><scripts></scripts><sprites><sprite name="Sprite" idx="1" x="0" y="0" heading="90" scale="1" rotation="1" draggable="true" costume="0" color="80,80,80" pen="tip" id="8"><costumes><list id="9"></list></costumes><sounds><list id="10"></list></sounds><variables></variables><blocks></blocks><scripts><script x="29" y="38"><block s="receiveGo"></block><block s="doBroadcastAndWait"><l>defineCloudMethod</l></block><block s="doSetVar"><l>results</l><block s="doRunCloudMethod"><l>getFluPeakForYear</l><list><l>hosted csv file url</l><l>2014</l></list></block></block></script><script x="29" y="172"><block s="receiveMessage"><l>defineCloudMethod</l></block><block s="doDefineCloudMethod"><l>getFluPeakForYear</l><list><l>data_source</l><l>year</l></list><script><block s="doSetCloudVariable"><l>a</l><block s="reportDataSelector"><l><option>all fields</option></l><block s="reportDataCondition"><l>YEAR</l><l><option>=</option></l><block s="doGetMethodParameter"><l>year</l></block></block><l></l><block s="doGetMethodParameter"><l>data_source</l></block></block></block><block s="doSetCloudVariable"><l>b</l><block s="reportDataMaximum"><l><option>maximum</option></l><l>ILITotal</l><block s="doGetCloudVariable"><l>a</l></block><l><option>entire row</option></l></block></block><block s="doCloudReport"><block s="doGetCloudVariable"><l>b</l></block></block></script></block></script></scripts></sprite><watcher var="results" style="normal" x="10" y="10" color="243,118,29"/></sprites></stage><hidden></hidden><headers></headers><code></code><blocks></blocks><variables><variable name="results"><l>450</l></variable></variables></project>'
-
-    root = element_tree.fromstring(xml_string)
+    # Turn the string into an xml object.
+    project_xml = element_tree.fromstring(project_xml_string)
 
     # mine = root.find('stage').get('width')
 
-    first_block = root.find('stage').find('sprites').find('sprite').find('scripts').find('script').find('block').get('s')
-    app.logger.debug(first_block)
+    # first_block = project_xml.find('stage').find('sprites').find('sprite').find('scripts').find('script').find('block').get('s')
+    # first_script = project_xml.find('stage').find('sprites').find('sprite').find('scripts').find('script')
 
-    # End - Testing for XML Parsing.
+    app.logger.debug('before')
+    # Select all of the blocks that have the attribute s=doDefineCloudMethod.
+    for block in project_xml.findall(".//*[@s='doDefineCloudMethod']"):
+        app.logger.debug('block=')
+        app.logger.debug(block)
+
+        # Select the cloud method name
+        cloud_method_name = block[0].text
+        app.logger.debug('cloud_method_name=')
+        app.logger.debug(cloud_method_name)
+
+        # Select the parameter names.
+        parameter_names_list = []
+        for parameter_l in block[1].findall('l'):
+            parameter_name = parameter_l.text
+            parameter_names_list.append(parameter_name)
+        app.logger.debug('parameter_names_list=')
+        app.logger.debug(parameter_names_list)
+
+        # Select the server name.
+        server_name = block[2].text
+        app.logger.debug('server_name=')
+        app.logger.debug(server_name)
+
+        # Select the scripts within the doDefineCloudMethod C-block.
+        block_script = block[3]
+
+        # Iterate over all of the blocks in the script.
+        for block_nested1 in block_script.findall('block'):
+
+            # Get the block name
+            block_nested1_name = block_nested1.get('s')  # doSetCloudVariable. #TODO. Go to this method.
+            app.logger.debug('block_nested1_name=')
+            app.logger.debug(block_nested1_name)
+
+
+            if block_nested1_name == "doSetCloudVariable":
+                # Get the cloud_variable_name
+                block_nested1_cloudvarname = block_nested1[0].text
+                app.logger.debug('cloudvarname=')
+                app.logger.debug(block_nested1_cloudvarname)
+
+                # Get the cloud_variable assign to value, which is probably another block.
+                block_nested1_cloudvarvalue = block_nested1[1]
+                app.logger.debug('cloudvarvalue=')
+                app.logger.debug(block_nested1_cloudvarvalue)
+
+
+
+    app.logger.debug('after')
+    define_blocks = project_xml.findall('block')
+
 
 
     # Runs a cloud computation.
 
 
     # Run the select method.
-    # csv_url = 'static/sampleData/fludata_small.csv'
-    # csv_url = 'http://think.cs.vt.edu/snap/static/sampleData/fludata_small.csv'
-    # csv_url = 'https://drive.google.com/file/d/0B-WWj_i0WSomYlptdDN5NFU1X0k/view?usp=sharing'. This one doesnt work.
-    # csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomYlptdDN5NFU1X0k'  # Flu Data Small CSV
     csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
     condition_field = 'YEAR'
     condition_operator = '=='
