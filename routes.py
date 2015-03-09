@@ -48,9 +48,10 @@ else:
 
 weatherservice.connect()
 app = Flask(__name__)
+
+# Server Variables.
 weatherReport = "";
-
-
+user_cloud_variables = {}
 
 
 
@@ -320,6 +321,45 @@ def urlRequestForClient():
 
     #Return the results.
     return jsonify(urlReport=urlReport)
+
+@app.route('/doSetCloudVariable')
+def doSetCloudVariable():
+    #Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    variable_name = str(request.args.get('variable_name'))
+    variable_value = str(request.args.get('variable_value'))
+
+    #Store the variable on the server.
+    user_cloud_variables[user_id] = {}
+    user_cloud_variables[user_id][variable_name] = variable_value
+    report = {'data': 'success'}
+    return jsonify(report=report);
+
+
+@app.route('/doRetrieveDataFromCloudVariable')
+def doRetrieveDataFromCloudVariable():
+    #Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    variable_name = str(request.args.get('variable_name'))
+    variable_value = None
+
+
+    #Get the variable from the server.
+    # try:
+    #    variable_value = user_cloud_variables[user_id][variable_name]
+    #    report = {'data': variable_value}
+    # except:
+    #    report = {'data': 'failed to retrieve data from the cloud variable'}
+    try:
+        variable_value = user_cloud_variables[user_id][variable_name]
+        report = {'data': variable_value, 'wasValueRetrieved': True}
+    except KeyError:
+        report = {'data': None, 'wasValueRetrieved': False}
+
+    # variable_value = user_cloud_variables[user_id][variable_name]
+    # report = {'data': variable_value}
+
+    return jsonify(report=report);
 
 
 @app.route('/runTestCloudMethod1')
