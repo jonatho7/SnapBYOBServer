@@ -301,7 +301,7 @@ def reportDataFromColumn():
 
 
 
-
+# Data Tools Blocks - Start
 
 @app.route('/urlRequestForClient')
 def urlRequestForClient():
@@ -322,7 +322,7 @@ def urlRequestForClient():
     #Return the results.
     return jsonify(urlReport=urlReport)
 
-@app.route('/doSetCloudVariable')
+@app.route('/dataProcessing/doSetCloudVariable')
 def doSetCloudVariable():
     #Get the request parameters.
     user_id = str(request.args.get('user_id'))
@@ -336,7 +336,7 @@ def doSetCloudVariable():
     return jsonify(report=report);
 
 
-@app.route('/doRetrieveDataFromCloudVariable')
+@app.route('/dataProcessing/doRetrieveDataFromCloudVariable')
 def doRetrieveDataFromCloudVariable():
     #Get the request parameters.
     user_id = str(request.args.get('user_id'))
@@ -350,6 +350,23 @@ def doRetrieveDataFromCloudVariable():
         report = {'data': None, 'wasValueRetrieved': False}
 
     return jsonify(report=report);
+
+
+@app.route('/dataProcessing/select')
+def dataProcessingSelect():
+    pass
+
+
+
+
+
+# Data Tools Blocks - End
+
+
+
+
+
+
 
 
 @app.route('/runTestCloudMethod1')
