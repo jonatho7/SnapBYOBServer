@@ -343,21 +343,11 @@ def doRetrieveDataFromCloudVariable():
     variable_name = str(request.args.get('variable_name'))
     variable_value = None
 
-
-    #Get the variable from the server.
-    # try:
-    #    variable_value = user_cloud_variables[user_id][variable_name]
-    #    report = {'data': variable_value}
-    # except:
-    #    report = {'data': 'failed to retrieve data from the cloud variable'}
     try:
         variable_value = user_cloud_variables[user_id][variable_name]
         report = {'data': variable_value, 'wasValueRetrieved': True}
     except KeyError:
         report = {'data': None, 'wasValueRetrieved': False}
-
-    # variable_value = user_cloud_variables[user_id][variable_name]
-    # report = {'data': variable_value}
 
     return jsonify(report=report);
 
