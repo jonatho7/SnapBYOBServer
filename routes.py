@@ -330,8 +330,12 @@ def doSetCloudVariable():
     variable_value = str(request.args.get('variable_value'))
 
     #Store the variable on the server.
-    user_cloud_variables[user_id] = {}
+    if user_cloud_variables.get(user_id) is None:
+        user_cloud_variables[user_id] = {}
     user_cloud_variables[user_id][variable_name] = variable_value
+
+    
+    #Return a report.
     report = {'data': 'success'}
     return jsonify(report=report);
 
