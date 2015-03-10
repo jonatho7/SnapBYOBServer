@@ -326,6 +326,7 @@ def urlRequestForClient():
 def doSetCloudVariable():
     # Get the request parameters.
     user_id = str(request.args.get('user_id'))
+    isValueAReferenceIndex = str(request.args.get('isValueAReferenceIndex'))
     variable_name = str(request.args.get('variable_name'))
     variable_value = str(request.args.get('variable_value'))
 
@@ -333,25 +334,19 @@ def doSetCloudVariable():
     if user_cloud_variables.get(user_id) is None:
             user_cloud_variables[user_id] = {}
 
-    # If variable_value is a number or a string, just go ahead and store it
-    if isinstance(variable_value, str) or isinstance(variable_value, (int, long, float)):
+    app.logger.debug("variable_value type")
+    app.logger.debug(type(variable_value))
+    app.logger.debug(variable_value)
+
+    # If the value is not a reference index, simply store the value.
+    if not isValueAReferenceIndex:
         # Store the variable on the server.
         user_cloud_variables[user_id][variable_name] = variable_value
-    elif isinstance(variable_value, dict):
-        # The variable is a dict. Let's check and see if it contains a variable_reference_index,
-        # which is a reference to a variable on the server.
-        if variable_value.get('variable_reference_index') is None:
-            # Return a failure report.
-            report = {'data': 'failure'}
-            return jsonify(report=report)
-        variable_reference_index = variable_value.get('variable_reference_index')
+    else :
+        # The value is a reference index, meaning the variable is already stored on the cloud server.
+        variable_reference_index = variable_value;
         variable_reference = server_cloud_variables[user_id][variable_reference_index]
         user_cloud_variables[user_id][variable_name] = variable_reference
-    else:
-        # The variable_value was not a number, string, or dict, so it was not the correct type.
-        # Return a failure report.
-        report = {'data': 'failure'}
-        return jsonify(report=report)
 
     # Return a report.
     report = {'data': 'success'}
@@ -365,13 +360,46 @@ def doRetrieveDataFromCloudVariable():
     variable_name = str(request.args.get('variable_name'))
     variable_value = None
 
-    try:
-        variable_value = user_cloud_variables[user_id][variable_name]
-        report = {'data': variable_value, 'wasValueRetrieved': True}
-    except KeyError:
-        report = {'data': None, 'wasValueRetrieved': False}
+    # If variable_name is a string or a number, then proceed.
+    if isinstance(variable_name, str) or isinstance(variable_name, (int, long, float)):
+        if user_cloud_variables.get(user_id).get(variable_name) is not None:
+            variable_value_object = user_cloud_variables.get(user_id).get(variable_name)
+            if isinstance(variable_value_object, str) or isinstance(variable_value_object, (int, long, float)):
+                # variable_value is simply a string or a number. Just return it.
+                variable_value = user_cloud_variables[user_id][variable_name]
+                report = {'data': variable_value, 'wasValueRetrieved': True}
+                return jsonify(report=report)
+            elif isinstance(variable_value_object, dict):
+                if (variable_value_object.get('variable_type') is not None) and (variable_value_object.get('variable_contents') is not None):
+                    if variable_value_object.get('variable_type') == "dataframe":
+                        variable_value = user_cloud_variables[user_id][variable_name]['variable_contents']
 
-    return jsonify(report=report)
+                        # Now convert the dataframe to a string, to send it back to the client.
+                        temp_var = StringIO.StringIO()
+                        variable_value.to_csv(temp_var)
+                        csv_output_string = temp_var.getvalue()
+
+                        report = {'data': csv_output_string, 'wasValueRetrieved': True}
+                        return jsonify(report=report)
+        else:
+            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
+            return jsonify(report=report)
+    else:
+        report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable name must be a string or a number"}
+        return jsonify(report=report)
+
+
+
+
+    # try:
+    #     variable_value = user_cloud_variables[user_id][variable_name]
+    #     report = {'data': variable_value, 'wasValueRetrieved': True}
+    # except KeyError:
+    #     report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
+    #
+
+
+    # return jsonify(report=report)
 
 
 @app.route('/dataProcessing/select')
@@ -404,7 +432,7 @@ def dataProcessingSelect():
     cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
 
     # Test Print:
-    app.logger.debug(cloud_var_a_dataframe)
+    # app.logger.debug(cloud_var_a_dataframe)
 
 
     # convert the dataframe to a string.
@@ -412,16 +440,16 @@ def dataProcessingSelect():
     cloud_var_a_dataframe.to_csv(temp_var)
 
     # Test Print
-    app.logger.debug("type of temp_var")
-    app.logger.debug(type(temp_var))
-    app.logger.debug(temp_var.__class__)
+    # app.logger.debug("type of temp_var")
+    # app.logger.debug(type(temp_var))
+    # app.logger.debug(temp_var.__class__)
 
     csv_output_string = temp_var.getvalue()
 
     # Test Print
-    app.logger.debug("type of csv_output_string")
-    app.logger.debug(type(csv_output_string))
-    app.logger.debug(csv_output_string)
+    # app.logger.debug("type of csv_output_string")
+    # app.logger.debug(type(csv_output_string))
+    # app.logger.debug(csv_output_string)
 
     # Store this result on the server somewhere, which can be accessed later.
     # variable_reference_index counts the number of variables this user has created.
@@ -433,7 +461,7 @@ def dataProcessingSelect():
         server_cloud_variables[user_id]['variable_reference_index'] = (server_cloud_variables[user_id]['variable_reference_index'] + 1)
 
     # Create variable_reference_index
-    variable_reference_index = server_cloud_variables[user_id]['variable_reference_index']
+    variable_reference_index = str(server_cloud_variables[user_id]['variable_reference_index'])
 
     # Store the contents inside server_cloud_variables.
     server_cloud_variables[user_id][variable_reference_index] = {}
