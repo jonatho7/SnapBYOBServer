@@ -50,9 +50,9 @@ weatherservice.connect()
 app = Flask(__name__)
 
 # Server Variables.
-weatherReport = "";
+weatherReport = ""
 user_cloud_variables = {}
-
+server_cloud_variables = {}
 
 
 
@@ -324,20 +324,38 @@ def urlRequestForClient():
 
 @app.route('/dataProcessing/doSetCloudVariable')
 def doSetCloudVariable():
-    #Get the request parameters.
+    # Get the request parameters.
     user_id = str(request.args.get('user_id'))
     variable_name = str(request.args.get('variable_name'))
     variable_value = str(request.args.get('variable_value'))
 
-    #Store the variable on the server.
+    # Get the user setup with a user_id if they need one.
     if user_cloud_variables.get(user_id) is None:
-        user_cloud_variables[user_id] = {}
-    user_cloud_variables[user_id][variable_name] = variable_value
+            user_cloud_variables[user_id] = {}
 
-    
-    #Return a report.
+    # If variable_value is a number or a string, just go ahead and store it
+    if isinstance(variable_value, str) or isinstance(variable_value, (int, long, float)):
+        # Store the variable on the server.
+        user_cloud_variables[user_id][variable_name] = variable_value
+    elif isinstance(variable_value, dict):
+        # The variable is a dict. Let's check and see if it contains a variable_reference_index,
+        # which is a reference to a variable on the server.
+        if variable_value.get('variable_reference_index') is None:
+            # Return a failure report.
+            report = {'data': 'failure'}
+            return jsonify(report=report)
+        variable_reference_index = variable_value.get('variable_reference_index')
+        variable_reference = server_cloud_variables[user_id][variable_reference_index]
+        user_cloud_variables[user_id][variable_name] = variable_reference
+    else:
+        # The variable_value was not a number, string, or dict, so it was not the correct type.
+        # Return a failure report.
+        report = {'data': 'failure'}
+        return jsonify(report=report)
+
+    # Return a report.
     report = {'data': 'success'}
-    return jsonify(report=report);
+    return jsonify(report=report)
 
 
 @app.route('/dataProcessing/doRetrieveDataFromCloudVariable')
@@ -353,7 +371,7 @@ def doRetrieveDataFromCloudVariable():
     except KeyError:
         report = {'data': None, 'wasValueRetrieved': False}
 
-    return jsonify(report=report);
+    return jsonify(report=report)
 
 
 @app.route('/dataProcessing/select')
@@ -390,13 +408,42 @@ def dataProcessingSelect():
 
 
     # convert the dataframe to a string.
-    #temp_var = StringIO.StringIO()
-    #cloud_var_a_dataframe.to_csv(temp_var)
-    #csv_output_string = temp_var.getvalue()
+    temp_var = StringIO.StringIO()
+    cloud_var_a_dataframe.to_csv(temp_var)
+
+    # Test Print
+    app.logger.debug("type of temp_var")
+    app.logger.debug(type(temp_var))
+    app.logger.debug(temp_var.__class__)
+
+    csv_output_string = temp_var.getvalue()
+
+    # Test Print
+    app.logger.debug("type of csv_output_string")
+    app.logger.debug(type(csv_output_string))
+    app.logger.debug(csv_output_string)
+
+    # Store this result on the server somewhere, which can be accessed later.
+    # variable_reference_index counts the number of variables this user has created.
+    # This number will be used to reference a particular variable that was created earlier.
+    if server_cloud_variables.get(user_id) is None:
+        server_cloud_variables[user_id] = {}
+        server_cloud_variables[user_id]['variable_reference_index'] = 0
+    else:
+        server_cloud_variables[user_id]['variable_reference_index'] = (server_cloud_variables[user_id]['variable_reference_index'] + 1)
+
+    # Create variable_reference_index
+    variable_reference_index = server_cloud_variables[user_id]['variable_reference_index']
+
+    # Store the contents inside server_cloud_variables.
+    server_cloud_variables[user_id][variable_reference_index] = {}
+    server_cloud_variables[user_id][variable_reference_index]['variable_type'] = 'dataframe'
+    server_cloud_variables[user_id][variable_reference_index]['variable_contents'] = cloud_var_a_dataframe
+
 
     # form a report and then return it.
-    csv_output_string = "success"
-    report = {'data': csv_output_string}
+    data = {'variable_reference_index': variable_reference_index}
+    report = {'data': data}
     return jsonify(report=report)
 
 
