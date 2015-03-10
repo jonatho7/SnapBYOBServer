@@ -22,8 +22,8 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
             condition_value = int(condition_value)
     # This error will occur when the user enters an invalid string for the condition name.
     except KeyError:
-        temp_string = "Invalid condition field name: " + str(condition_field)
-        return temp_string
+        errorMessage = "Invalid condition field name: " + str(condition_field)
+        return {"errorMessage": errorMessage}
 
     # Select only the relevant rows from the csv data.
     if condition_operator == '==':
@@ -47,7 +47,7 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     # debugging.
     # logger.debug(new_csv_dataframe)
 
-    return new_csv_dataframe
+    return {"dataframe": new_csv_dataframe, "errorMessage": None}
 
 
 def get_maximum(csv_dataframe, field_name, return_type_string):

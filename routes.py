@@ -439,7 +439,12 @@ def dataProcessingSelect():
         return jsonify(report=report)
 
     # perform the select method.
-    cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+    results = cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+    if results.get('errorMessage') is not None:
+        report = {'errorMessage': results.get('errorMessage')}
+        return jsonify(report=report)
+    else:
+        cloud_var_a_dataframe = results.get('dataframe')
 
     app.logger.debug(cloud_var_a_dataframe)
 
