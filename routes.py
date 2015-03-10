@@ -354,7 +354,47 @@ def doRetrieveDataFromCloudVariable():
 
 @app.route('/dataProcessing/select')
 def dataProcessingSelect():
-    pass
+    # pandas is only required for a few of the data processing operations.
+    import pandas as pandas
+
+    # Setup the debugger.
+    computeservice.setup_debugger(app.logger)
+
+    # Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    isSelectAllFields = str(request.args.get('isSelectAllFields'))
+    selectedFields = str(request.args.get('selectedFields'))
+    conditionJSON = str(request.args.get('conditionJSON'))
+    filterJSON = str(request.args.get('filterJSON'))
+    dataSourceCSVString = str(request.args.get('dataSourceCSVString'))
+
+    # Now perform the select method.
+    # Run the select method.
+    csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
+    condition_field = 'YEAR'
+    condition_operator = '=='
+    condition_value = '2014'
+
+    # Read in the csv file.
+    csv_dataframe = pandas.read_csv(csv_url)
+
+    # perform the select method.
+    cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+
+    # Test Print:
+    app.logger.debug(cloud_var_a_dataframe)
+
+
+    # convert the dataframe to a string.
+    #temp_var = StringIO.StringIO()
+    #cloud_var_a_dataframe.to_csv(temp_var)
+    #csv_output_string = temp_var.getvalue()
+
+    # form a report and then return it.
+    csv_output_string = "success"
+    report = {'data': csv_output_string}
+    return jsonify(report=report)
+
 
 
 
@@ -393,7 +433,7 @@ def runTestCloudMethod1():
 
 @app.route('/computeservice/runTestCloudMethod2')
 def runTestCloudMethod2():
-    # pandas is not installed on the think server yet. So to avoid errors, I will put the import here for now.
+    # pandas is only required for a few of the data processing operations.
     import pandas as pandas
 
     # Setup the debugger.
