@@ -432,8 +432,6 @@ def dataProcessingSelect():
     # Read in the csv file.
     try:
         csv_dataframe = pandas.read_csv(csv_url)
-    except KeyError:
-        pass
     except IOError as e:
         report = {'errorMessage': e.message}
         return jsonify(report=report)

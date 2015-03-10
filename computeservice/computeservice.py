@@ -17,9 +17,17 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     # convert condition_value to the same type as the condition_field so comparisons can be made.
     try:
         if isinstance(csv_dataframe[condition_field][0], np.float):
-            condition_value = float(condition_value)
+            try:
+                condition_value = float(condition_value)
+            except ValueError:
+                errorMessage = "Condition field '" + condition_field + "' and condition value '" + str(condition_value) +  "' are not of the same type. "
+                return {"errorMessage": errorMessage}
         elif isinstance(csv_dataframe[condition_field][0], np.integer):
-            condition_value = int(condition_value)
+            try:
+                condition_value = int(condition_value)
+            except ValueError:
+                errorMessage = "Condition field '" + condition_field + "' and condition value '" + str(condition_value) +  "' are not of the same type. "
+                return {"errorMessage": errorMessage}
     # This error will occur when the user enters an invalid string for the condition name.
     except KeyError:
         errorMessage = "Invalid condition field name: " + str(condition_field)
