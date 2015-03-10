@@ -332,14 +332,17 @@ def doSetCloudVariable():
 
     # Get the user setup with a user_id if they need one.
     if user_cloud_variables.get(user_id) is None:
-            user_cloud_variables[user_id] = {}
+        user_cloud_variables[user_id] = {}
 
     app.logger.debug("variable_value type")
     app.logger.debug(type(variable_value))
     app.logger.debug(variable_value)
 
+    app.logger.debug(isValueAReferenceIndex)
+    app.logger.debug(type(isValueAReferenceIndex))
+
     # If the value is not a reference index, simply store the value.
-    if not isValueAReferenceIndex:
+    if isValueAReferenceIndex == "false":
         # Store the variable on the server.
         user_cloud_variables[user_id][variable_name] = variable_value
     else :
@@ -414,42 +417,31 @@ def dataProcessingSelect():
     user_id = str(request.args.get('user_id'))
     isSelectAllFields = str(request.args.get('isSelectAllFields'))
     selectedFields = str(request.args.get('selectedFields'))
-    conditionJSON = str(request.args.get('conditionJSON'))
+    condition_field = str(request.args.get('conditionField'))
+    condition_operator = str(request.args.get('conditionOperator'))
+    condition_value = str(request.args.get('conditionValue'))
     filterJSON = str(request.args.get('filterJSON'))
-    dataSourceCSVString = str(request.args.get('dataSourceCSVString'))
+    csv_url = str(request.args.get('dataSourceCSVString'))
 
-    # Now perform the select method.
-    # Run the select method.
-    csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
-    condition_field = 'YEAR'
-    condition_operator = '=='
-    condition_value = '2014'
+    # Setup the parameters.
+    # condition_field = 'YEAR'
+    # condition_operator = '=='
+    # condition_value = '2014'
+    # csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
 
     # Read in the csv file.
-    csv_dataframe = pandas.read_csv(csv_url)
+    try:
+        csv_dataframe = pandas.read_csv(csv_url)
+    except KeyError:
+        pass
+    except IOError as e:
+        report = {'errorMessage': e.message}
+        return jsonify(report=report)
 
     # perform the select method.
     cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
 
-    # Test Print:
-    # app.logger.debug(cloud_var_a_dataframe)
-
-
-    # convert the dataframe to a string.
-    temp_var = StringIO.StringIO()
-    cloud_var_a_dataframe.to_csv(temp_var)
-
-    # Test Print
-    # app.logger.debug("type of temp_var")
-    # app.logger.debug(type(temp_var))
-    # app.logger.debug(temp_var.__class__)
-
-    csv_output_string = temp_var.getvalue()
-
-    # Test Print
-    # app.logger.debug("type of csv_output_string")
-    # app.logger.debug(type(csv_output_string))
-    # app.logger.debug(csv_output_string)
+    app.logger.debug(cloud_var_a_dataframe)
 
     # Store this result on the server somewhere, which can be accessed later.
     # variable_reference_index counts the number of variables this user has created.
@@ -469,8 +461,8 @@ def dataProcessingSelect():
     server_cloud_variables[user_id][variable_reference_index]['variable_contents'] = cloud_var_a_dataframe
 
 
-    # form a report and then return it.
-    data = {'variable_reference_index': variable_reference_index}
+    # form a report with a reference to the variable on the cloud and then return it.
+    data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
     report = {'data': data}
     return jsonify(report=report)
 
