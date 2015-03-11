@@ -334,12 +334,6 @@ def doSetCloudVariable():
     if user_cloud_variables.get(user_id) is None:
         user_cloud_variables[user_id] = {}
 
-    app.logger.debug("variable_value type")
-    app.logger.debug(type(variable_value))
-    app.logger.debug(variable_value)
-
-    app.logger.debug(isValueAReferenceIndex)
-    app.logger.debug(type(isValueAReferenceIndex))
 
     # If the value is not a reference index, simply store the value.
     if isValueAReferenceIndex == "false":
@@ -368,11 +362,11 @@ def doRetrieveDataFromCloudVariable():
         # Check the variable_name - Start
         if user_cloud_variables.get(user_id) is None:
             # There isn't a user_id because no variables have been added yet . Return an error.
-            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
+            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The cloud variable '" + variable_name + "' was not found"}
             return jsonify(report=report)
         if user_cloud_variables.get(user_id).get(variable_name) is None:
             # There is a user_id but this variable does not exist. Return an error.
-            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
+            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The cloud variable '" + variable_name + "' was not found"}
             return jsonify(report=report)
         #Check the variable_name - End
 
@@ -396,21 +390,10 @@ def doRetrieveDataFromCloudVariable():
                     return jsonify(report=report)
 
     else:
-        report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable name must be a string or a number"}
+        report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The cloud variable name must be a string or a number"}
         return jsonify(report=report)
 
 
-
-
-    # try:
-    #     variable_value = user_cloud_variables[user_id][variable_name]
-    #     report = {'data': variable_value, 'wasValueRetrieved': True}
-    # except KeyError:
-    #     report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
-    #
-
-
-    # return jsonify(report=report)
 
 
 @app.route('/dataProcessing/select')
@@ -447,21 +430,30 @@ def dataProcessingSelect():
             report = {'errorMessage': e.message}
             return jsonify(report=report)
     elif dataSourceType == "cloud_variable":
-        # Check to see if the user_id and the cloud variable exist.
+        # Perform some checks to make sure we get a valid dataframe from the cloud variable.
         if user_cloud_variables.get(user_id) is None:
             # There isn't a user_id because no variables have been added yet . Return an error.
-            report = {'errorMessage': "The variable '" + dataSourceValue + "' was not found"}
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
             return jsonify(report=report)
         if user_cloud_variables.get(user_id).get(dataSourceValue) is None:
             # There is a user_id but this variable does not exist. Return an error.
-            report = {'errorMessage': "The variable '" + dataSourceValue + "' was not found"}
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
+            return jsonify(report=report)
+        if isinstance(user_cloud_variables.get(user_id).get(dataSourceValue), (str, int, long, float)):
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
+            return jsonify(report=report)
+        if user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_type') != "dataframe":
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
+            return jsonify(report=report)
+        if str(type(user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents'))) != "<class 'pandas.core.frame.DataFrame'>":
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
             return jsonify(report=report)
 
         # Retrieve the cloud variable.
-        csv_dataframe = user_cloud_variables.get(user_id).get(dataSourceValue);
-
-        # What if the cloud variable was not a dataframe? Throw an error.
-        app.logger.debug(csv_dataframe)
+        csv_dataframe = user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents');
 
 
     # perform the select method.
