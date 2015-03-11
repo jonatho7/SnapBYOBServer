@@ -365,28 +365,36 @@ def doRetrieveDataFromCloudVariable():
 
     # If variable_name is a string or a number, then proceed.
     if isinstance(variable_name, str) or isinstance(variable_name, (int, long, float)):
-        if user_cloud_variables.get(user_id).get(variable_name) is not None:
-            variable_value_object = user_cloud_variables.get(user_id).get(variable_name)
-            if isinstance(variable_value_object, str) or isinstance(variable_value_object, (int, long, float)):
-                # variable_value is simply a string or a number. Just return it.
-                variable_value = user_cloud_variables[user_id][variable_name]
-                report = {'data': variable_value, 'wasValueRetrieved': True}
-                return jsonify(report=report)
-            elif isinstance(variable_value_object, dict):
-                if (variable_value_object.get('variable_type') is not None) and (variable_value_object.get('variable_contents') is not None):
-                    if variable_value_object.get('variable_type') == "dataframe":
-                        variable_value = user_cloud_variables[user_id][variable_name]['variable_contents']
-
-                        # Now convert the dataframe to a string, to send it back to the client.
-                        temp_var = StringIO.StringIO()
-                        variable_value.to_csv(temp_var)
-                        csv_output_string = temp_var.getvalue()
-
-                        report = {'data': csv_output_string, 'wasValueRetrieved': True}
-                        return jsonify(report=report)
-        else:
+        # Check the variable_name - Start
+        if user_cloud_variables.get(user_id) is None:
+            # There isn't a user_id because no variables have been added yet . Return an error.
             report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
             return jsonify(report=report)
+        if user_cloud_variables.get(user_id).get(variable_name) is None:
+            # There is a user_id but this variable does not exist. Return an error.
+            report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable '" + variable_name + "' was not found"}
+            return jsonify(report=report)
+        #Check the variable_name - End
+
+        variable_value_object = user_cloud_variables.get(user_id).get(variable_name)
+        if isinstance(variable_value_object, str) or isinstance(variable_value_object, (int, long, float)):
+            # variable_value is simply a string or a number. Just return it.
+            variable_value = user_cloud_variables[user_id][variable_name]
+            report = {'data': variable_value, 'wasValueRetrieved': True}
+            return jsonify(report=report)
+        elif isinstance(variable_value_object, dict):
+            if (variable_value_object.get('variable_type') is not None) and (variable_value_object.get('variable_contents') is not None):
+                if variable_value_object.get('variable_type') == "dataframe":
+                    variable_value = user_cloud_variables[user_id][variable_name]['variable_contents']
+
+                    # Now convert the dataframe to a string, to send it back to the client.
+                    temp_var = StringIO.StringIO()
+                    variable_value.to_csv(temp_var)
+                    csv_output_string = temp_var.getvalue()
+
+                    report = {'data': csv_output_string, 'wasValueRetrieved': True}
+                    return jsonify(report=report)
+
     else:
         report = {'data': None, 'wasValueRetrieved': False, 'errorMessage': "The variable name must be a string or a number"}
         return jsonify(report=report)
@@ -421,7 +429,8 @@ def dataProcessingSelect():
     condition_operator = str(request.args.get('conditionOperator'))
     condition_value = str(request.args.get('conditionValue'))
     filterJSON = str(request.args.get('filterJSON'))
-    csv_url = str(request.args.get('dataSourceCSVString'))
+    dataSourceType = str(request.args.get('dataSourceType'))
+    dataSourceValue = str(request.args.get('dataSourceValue'))
 
     # Setup the parameters.
     # condition_field = 'YEAR'
@@ -429,12 +438,31 @@ def dataProcessingSelect():
     # condition_value = '2014'
     # csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
 
-    # Read in the csv file.
-    try:
-        csv_dataframe = pandas.read_csv(csv_url)
-    except IOError as e:
-        report = {'errorMessage': e.message}
-        return jsonify(report=report)
+    # If dataSourceType is a url.
+    if dataSourceType == "url":
+        # Read in the csv file.
+        try:
+            csv_dataframe = pandas.read_csv(dataSourceValue)
+        except IOError as e:
+            report = {'errorMessage': e.message}
+            return jsonify(report=report)
+    elif dataSourceType == "cloud_variable":
+        # Check to see if the user_id and the cloud variable exist.
+        if user_cloud_variables.get(user_id) is None:
+            # There isn't a user_id because no variables have been added yet . Return an error.
+            report = {'errorMessage': "The variable '" + dataSourceValue + "' was not found"}
+            return jsonify(report=report)
+        if user_cloud_variables.get(user_id).get(dataSourceValue) is None:
+            # There is a user_id but this variable does not exist. Return an error.
+            report = {'errorMessage': "The variable '" + dataSourceValue + "' was not found"}
+            return jsonify(report=report)
+
+        # Retrieve the cloud variable.
+        csv_dataframe = user_cloud_variables.get(user_id).get(dataSourceValue);
+
+        # What if the cloud variable was not a dataframe? Throw an error.
+        app.logger.debug(csv_dataframe)
+
 
     # perform the select method.
     results = cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
