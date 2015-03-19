@@ -1,6 +1,4 @@
 
-
-
 logger = None
 def setup_debugger(logger_reference):
     global logger
@@ -8,11 +6,7 @@ def setup_debugger(logger_reference):
 
 
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
-    # logger.debug(csv_dataframe)
-
-    import pandas as pandas
     import numpy as np
-
 
     # convert condition_value to the same type as the condition_field so comparisons can be made.
     try:
@@ -58,17 +52,22 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     return {"dataframe": new_csv_dataframe, "errorMessage": None}
 
 
-def get_maximum(csv_dataframe, field_name, return_type_string):
+def get_maximum(csv_dataframe, field, returnType):
 
-    import pandas as pandas
-    import numpy as np
+    if csv_dataframe.empty:
+        errorMessage = "A maximum value cannot be acquired. There are no rows of data left."
+        return {"errorMessage": errorMessage}
 
-    if not csv_dataframe.empty:
-        #The dataframe is not empty.
+    #The dataframe is not empty.
 
-        # Get the index where the maximum is, and also get the maximum.
-        index_of_max = csv_dataframe[field_name].argmax()
-        max_value = csv_dataframe[field_name].max()
+    # Check the return type parameter.
+    if returnType != "entire row" and returnType != "value only":
+        errorMessage = 'The return type must equal "entire row" or "value only".'
+        return {"errorMessage": errorMessage}
+
+    # Get the maximum.
+    if returnType == "entire row":
+        index_of_max = csv_dataframe[field].argmax()
 
         # Create a new csv dataframe with only this result.
         new_csv_dataframe = csv_dataframe[index_of_max:index_of_max+1]
@@ -76,20 +75,39 @@ def get_maximum(csv_dataframe, field_name, return_type_string):
         #Re-index the dataframe
         new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
-        if return_type_string == "entire row":
-            return new_csv_dataframe
-        elif return_type_string == "value only":
-            return max_value
-        else:
-            return "Unexpected error."
-    else:
-        # The dataframe is empty.
-        if return_type_string == "entire row":
-            return csv_dataframe
-        elif return_type_string == "value only":
-            return "A maximum value cannot be acquired. There are no rows of data."
-        else:
-            return "Unexpected error."
+        return {"dataframe": new_csv_dataframe, "errorMessage": None}
+    elif returnType == "value only":
+        max_value = csv_dataframe[field].max()
+        return {"primitive_value": max_value, "errorMessage": None}
+
+
+def get_minimum(csv_dataframe, field, returnType):
+
+    if csv_dataframe.empty:
+        errorMessage = "A minimum value cannot be acquired. There are no rows of data left."
+        return {"errorMessage": errorMessage}
+
+    #The dataframe is not empty.
+
+    # Check the return type parameter.
+    if returnType != "entire row" and returnType != "value only":
+        errorMessage = 'The return type must equal "entire row" or "value only".'
+        return {"errorMessage": errorMessage}
+
+    # Get the minimum.
+    if returnType == "entire row":
+        index_of_min = csv_dataframe[field].argmin()
+
+        # Create a new csv dataframe with only this result.
+        new_csv_dataframe = csv_dataframe[index_of_min:index_of_min+1]
+
+        #Re-index the dataframe
+        new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
+
+        return {"dataframe": new_csv_dataframe, "errorMessage": None}
+    elif returnType == "value only":
+        min_value = csv_dataframe[field].min()
+        return {"primitive_value": min_value, "errorMessage": None}
 
 
 def get_average(csv_dataframe, field_name):

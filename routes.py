@@ -411,78 +411,121 @@ def dataProcessingSelect():
     condition_field = str(request.args.get('conditionField'))
     condition_operator = str(request.args.get('conditionOperator'))
     condition_value = str(request.args.get('conditionValue'))
-    filterJSON = str(request.args.get('filterJSON'))
     dataSourceType = str(request.args.get('dataSourceType'))
     dataSourceValue = str(request.args.get('dataSourceValue'))
 
-    # Setup the parameters.
-    # condition_field = 'YEAR'
-    # condition_operator = '=='
-    # condition_value = '2014'
-    # csv_url = 'https://drive.google.com/uc?export=download&id=0B-WWj_i0WSomaUkwQVpYenlRWm8'  # ILINET-All Regions CSV
-
-    # If dataSourceType is a url.
-    if dataSourceType == "url":
-        # Read in the csv file.
-        try:
-            csv_dataframe = pandas.read_csv(dataSourceValue)
-        except IOError as e:
-            report = {'errorMessage': e.message}
-            return jsonify(report=report)
-    elif dataSourceType == "cloud_variable":
-        # Perform some checks to make sure we get a valid dataframe from the cloud variable.
-        if user_cloud_variables.get(user_id) is None:
-            # There isn't a user_id because no variables have been added yet . Return an error.
-            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
-            return jsonify(report=report)
-        if user_cloud_variables.get(user_id).get(dataSourceValue) is None:
-            # There is a user_id but this variable does not exist. Return an error.
-            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
-            return jsonify(report=report)
-        if isinstance(user_cloud_variables.get(user_id).get(dataSourceValue), (str, int, long, float)):
-            # The cloud variable is not a dataframe. Return an error.
-            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
-            return jsonify(report=report)
-        if user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_type') != "dataframe":
-            # The cloud variable is not a dataframe. Return an error.
-            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
-            return jsonify(report=report)
-        if str(type(user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents'))) != "<class 'pandas.core.frame.DataFrame'>":
-            # The cloud variable is not a dataframe. Return an error.
-            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
-            return jsonify(report=report)
-
-        # Retrieve the cloud variable.
-        csv_dataframe = user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents');
+    # Verify and Get the data source.
+    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    if errorReport == "errorOccurred":
+        return methodReturnValue
+    elif methodReturnValue is None:
+        report = {'errorMessage': "The data source type was not a url or a cloud variable."}
+        return jsonify(report=report)
+    else:
+        csv_dataframe = methodReturnValue
 
 
     # perform the select method.
-    results = cloud_var_a_dataframe = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+    results = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
+    # Check for an error.
     if results.get('errorMessage') is not None:
         report = {'errorMessage': results.get('errorMessage')}
         return jsonify(report=report)
-    else:
-        cloud_var_a_dataframe = results.get('dataframe')
 
+    cloud_var_a_dataframe = results.get('dataframe')
+
+    # Testing.
     app.logger.debug(cloud_var_a_dataframe)
 
-    # Store this result on the server somewhere, which can be accessed later.
-    # variable_reference_index counts the number of variables this user has created.
-    # This number will be used to reference a particular variable that was created earlier.
-    if server_cloud_variables.get(user_id) is None:
-        server_cloud_variables[user_id] = {}
-        server_cloud_variables[user_id]['variable_reference_index'] = 0
+    '''
+    Store the result of the processing operation in the serverCloudVariables dictionary.
+    Then receive a variable_reference_index which is a number which is used to later reference the stored variable.
+    '''
+    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type="dataframe", variable_value=cloud_var_a_dataframe)
+
+    # form a report with a reference to the variable on the cloud and then return it.
+    data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
+    report = {'data': data}
+    return jsonify(report=report)
+
+@app.route('/dataProcessing/methodSet1')
+def dataProcessingMethodSet1():
+    # pandas is only required for a few of the data processing operations.
+    import pandas as pandas
+
+    # Setup the debugger.
+    computeservice.setup_debugger(app.logger)
+
+    # Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    operationType = str(request.args.get('operationType'))
+    field = str(request.args.get('field'))
+    dataSourceType = str(request.args.get('dataSourceType'))
+    dataSourceValue = str(request.args.get('dataSourceValue'))
+    returnType = str(request.args.get('returnType'))
+
+    # Verify and Get the data source.
+    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    if errorReport == "errorOccurred":
+        return methodReturnValue
+    elif methodReturnValue is None:
+        report = {'errorMessage': "The data source type was not a url or a cloud variable."}
+        return jsonify(report=report)
     else:
-        server_cloud_variables[user_id]['variable_reference_index'] = (server_cloud_variables[user_id]['variable_reference_index'] + 1)
+        csv_dataframe = methodReturnValue
 
-    # Create variable_reference_index
-    variable_reference_index = str(server_cloud_variables[user_id]['variable_reference_index'])
+    # perform the desired processing method.
+    if operationType == "maximum":
+        # perform the maximum method.
+        results = computeservice.get_maximum(csv_dataframe, field, returnType)
+        # Check for an error.
+        if results.get('errorMessage') is not None:
+            # Then there was an error. Return the errorMessage.
+            report = {'errorMessage': results.get('errorMessage')}
+            return jsonify(report=report)
 
-    # Store the contents inside server_cloud_variables.
-    server_cloud_variables[user_id][variable_reference_index] = {}
-    server_cloud_variables[user_id][variable_reference_index]['variable_type'] = 'dataframe'
-    server_cloud_variables[user_id][variable_reference_index]['variable_contents'] = cloud_var_a_dataframe
+        if returnType == "entire row":
+            variable_type = "dataframe"
+            variable_value = results.get('dataframe')
+        elif returnType == "value only":
+            variable_type = "primitive"
+            variable_value = results.get('primitive_value')
+        else:
+            # Then there was an error. Return the errorMessage.
+            report = {'errorMessage': 'The return type must equal "entire row" or "value only".'}
+            return jsonify(report=report)
+    elif operationType == "minimum":
+        # perform the minimum method.
+        results = computeservice.get_minimum(csv_dataframe, field, returnType)
+        # Check for an error.
+        if results.get('errorMessage') is not None:
+            # Then there was an error. Return the errorMessage.
+            report = {'errorMessage': results.get('errorMessage')}
+            return jsonify(report=report)
 
+        if returnType == "entire row":
+            variable_type = "dataframe"
+            variable_value = results.get('dataframe')
+        elif returnType == "value only":
+            variable_type = "primitive"
+            variable_value = results.get('primitive_value')
+        else:
+            # Then there was an error. Return the errorMessage.
+            report = {'errorMessage': 'The return type must equal "entire row" or "value only".'}
+            return jsonify(report=report)
+    else:
+        # Then there was an error. Return the errorMessage.
+        report = {'errorMessage': 'The operation type must equal "maximum" or "minimum".'}
+        return jsonify(report=report)
+
+    # Testing
+    app.logger.debug(variable_value)
+
+    '''
+    Store the result of the processing operation in the serverCloudVariables dictionary.
+    Then receive a variable_reference_index which is a number which is used to later reference the stored variable.
+    '''
+    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type, variable_value)
 
     # form a report with a reference to the variable on the cloud and then return it.
     data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
@@ -490,7 +533,69 @@ def dataProcessingSelect():
     return jsonify(report=report)
 
 
+def getDataSource(pandas, user_id, dataSourceType, dataSourceValue):
+    # If dataSourceType is a url.
+    if dataSourceType == "url":
+        # Read in the csv file.
+        try:
+            csv_dataframe = pandas.read_csv(dataSourceValue)
+        except IOError as e:
+            report = {'errorMessage': e.message}
+            return ("erorrOccurred", jsonify(report=report))
+    elif dataSourceType == "cloud_variable":
+        # Perform some checks to make sure we get a valid dataframe from the cloud variable.
+        if user_cloud_variables.get(user_id) is None:
+            # There isn't a user_id because no variables have been added yet . Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
+            return ("erorrOccurred", jsonify(report=report))
+        if user_cloud_variables.get(user_id).get(dataSourceValue) is None:
+            # There is a user_id but this variable does not exist. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' was not found"}
+            return ("erorrOccurred", jsonify(report=report))
+        if isinstance(user_cloud_variables.get(user_id).get(dataSourceValue), (str, int, long, float)):
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
+            return ("erorrOccurred", jsonify(report=report))
+        if user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_type') != "dataframe":
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
+            return ("erorrOccurred", jsonify(report=report))
+        if str(type(user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents'))) != "<class 'pandas.core.frame.DataFrame'>":
+            # The cloud variable is not a dataframe. Return an error.
+            report = {'errorMessage': "The cloud variable '" + dataSourceValue + "' is not a dataframe that can be operated on"}
+            return ("erorrOccurred", jsonify(report=report))
+        # Checks passed. The cloud variable is a CSV dataframe. Retrieve the cloud variable.
+        csv_dataframe = user_cloud_variables.get(user_id).get(dataSourceValue).get('variable_contents')
+    else:
+        csv_dataframe = None
 
+    return ("noErrorOccurred", csv_dataframe)
+
+def storeInServerCloudVariablesDictionary(user_id, variable_type, variable_value):
+    # Store this result on the server somewhere, which can be accessed later.
+    # variable_reference_index counts the number of variables this user has created.
+    # This number will be used to reference a particular variable that was created earlier.
+
+    if server_cloud_variables.get(user_id) is None:
+        # The user has just run their first processing operation.
+        server_cloud_variables[user_id] = {}
+        server_cloud_variables[user_id]['variable_reference_index'] = 0
+    else:
+        # The user has already run a processing operation. Increment the index.
+        server_cloud_variables[user_id]['variable_reference_index'] = (server_cloud_variables[user_id]['variable_reference_index'] + 1)
+
+    # Get the variable_reference_index
+    variable_reference_index = str(server_cloud_variables[user_id]['variable_reference_index'])
+
+    # Store the contents inside server_cloud_variables.
+    if variable_type == "dataframe":
+        server_cloud_variables[user_id][variable_reference_index] = {}
+        server_cloud_variables[user_id][variable_reference_index]['variable_type'] = 'dataframe'
+        server_cloud_variables[user_id][variable_reference_index]['variable_contents'] = variable_value
+    elif variable_type == "primitive":
+        server_cloud_variables[user_id][variable_reference_index] = variable_value
+
+    return variable_reference_index
 
 
 
