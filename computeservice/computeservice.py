@@ -43,7 +43,7 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     else:
         new_csv_dataframe = csv_dataframe
 
-    #Re-index the dataframe
+    # Re-index the dataframe
     new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
     # debugging.
@@ -72,7 +72,7 @@ def get_maximum(csv_dataframe, field, returnType):
         # Create a new csv dataframe with only this result.
         new_csv_dataframe = csv_dataframe[index_of_max:index_of_max+1]
 
-        #Re-index the dataframe
+        # Re-index the dataframe
         new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
         return {"dataframe": new_csv_dataframe, "errorMessage": None}
@@ -101,7 +101,7 @@ def get_minimum(csv_dataframe, field, returnType):
         # Create a new csv dataframe with only this result.
         new_csv_dataframe = csv_dataframe[index_of_min:index_of_min+1]
 
-        #Re-index the dataframe
+        # Re-index the dataframe
         new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
 
         return {"dataframe": new_csv_dataframe, "errorMessage": None}
