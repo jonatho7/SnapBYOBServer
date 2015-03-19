@@ -414,7 +414,7 @@ def dataProcessingSelect():
     dataSourceType = str(request.args.get('dataSourceType'))
     dataSourceValue = str(request.args.get('dataSourceValue'))
 
-    # Verify and Get the data source.
+    # Check the dataSource parameters and Get the data source.
     (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
         return methodReturnValue
@@ -432,16 +432,17 @@ def dataProcessingSelect():
         report = {'errorMessage': results.get('errorMessage')}
         return jsonify(report=report)
 
-    cloud_var_a_dataframe = results.get('dataframe')
+    variable_type = "dataframe"
+    variable_value = results.get('dataframe')
 
     # Testing.
-    app.logger.debug(cloud_var_a_dataframe)
+    app.logger.debug(variable_value)
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.
     Then receive a variable_reference_index which is a number which is used to later reference the stored variable.
     '''
-    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type="dataframe", variable_value=cloud_var_a_dataframe)
+    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type, variable_value)
 
     # form a report with a reference to the variable on the cloud and then return it.
     data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
@@ -464,7 +465,13 @@ def dataProcessingMethodSet1():
     dataSourceValue = str(request.args.get('dataSourceValue'))
     returnType = str(request.args.get('returnType'))
 
-    # Verify and Get the data source.
+    # Check the operationType parameter.
+    if operationType != "maximum" and operationType != "minimum":
+        # Then there was an error. Return the errorMessage.
+        report = {'errorMessage': 'The operation type must equal "maximum" or "minimum".'}
+        return jsonify(report=report)
+
+    # Check the dataSource parameters and Get the data source.
     (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
         return methodReturnValue
@@ -513,13 +520,10 @@ def dataProcessingMethodSet1():
             # Then there was an error. Return the errorMessage.
             report = {'errorMessage': 'The return type must equal "entire row" or "value only".'}
             return jsonify(report=report)
-    else:
-        # Then there was an error. Return the errorMessage.
-        report = {'errorMessage': 'The operation type must equal "maximum" or "minimum".'}
-        return jsonify(report=report)
 
     # Testing
     app.logger.debug(variable_value)
+    app.logger.debug(type(variable_value))
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.
@@ -531,6 +535,78 @@ def dataProcessingMethodSet1():
     data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
     report = {'data': data}
     return jsonify(report=report)
+
+
+@app.route('/dataProcessing/methodSet2')
+def dataProcessingMethodSet2():
+    # pandas is only required for a few of the data processing operations.
+    import pandas as pandas
+    import numpy as np
+
+    # Setup the debugger.
+    computeservice.setup_debugger(app.logger)
+
+    # Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    operationType = str(request.args.get('operationType'))
+    field = str(request.args.get('field'))
+    dataSourceType = str(request.args.get('dataSourceType'))
+    dataSourceValue = str(request.args.get('dataSourceValue'))
+
+    # Check the operationType parameter.
+    if operationType != "average" and operationType != "sum" and operationType != "product":
+        # Then there was an error. Return the errorMessage.
+        report = {'errorMessage': 'The operation type must equal "average", "sum", or "product".'}
+        return jsonify(report=report)
+
+    # Check the dataSource parameters and Get the data source.
+    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    if errorReport == "errorOccurred":
+        return methodReturnValue
+    elif methodReturnValue is None:
+        report = {'errorMessage': "The data source type was not a url or a cloud variable."}
+        return jsonify(report=report)
+    else:
+        csv_dataframe = methodReturnValue
+
+
+    # perform the desired processing method.
+    if operationType == "average":
+        # perform the average method.
+        results = computeservice.get_average(csv_dataframe, field)
+    elif operationType == "sum":
+        # perform the sum method.
+        results = computeservice.get_sum(csv_dataframe, field)
+    elif operationType == "product":
+        # perform the product method.
+        results = computeservice.get_product(csv_dataframe, field)
+
+
+
+    # Check for an error.
+    if results.get('errorMessage') is not None:
+        # Then there was an error. Return the errorMessage.
+        report = {'errorMessage': results.get('errorMessage')}
+        return jsonify(report=report)
+
+    variable_type = "primitive"
+    variable_value = results.get('primitive_value')
+
+    # Testing
+    app.logger.debug(variable_value)
+    app.logger.debug(type(variable_value))
+
+    '''
+    Store the result of the processing operation in the serverCloudVariables dictionary.
+    Then receive a variable_reference_index which is a number which is used to later reference the stored variable.
+    '''
+    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type, variable_value)
+
+    # form a report with a reference to the variable on the cloud and then return it.
+    data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
+    report = {'data': data}
+    return jsonify(report=report)
+
 
 
 def getDataSource(pandas, user_id, dataSourceType, dataSourceValue):

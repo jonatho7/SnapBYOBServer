@@ -24,7 +24,7 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
                 return {"errorMessage": errorMessage}
     # This error will occur when the user enters an invalid string for the condition name.
     except KeyError:
-        errorMessage = "Invalid condition field name: " + str(condition_field)
+        errorMessage = "The data source does not have a field named: " + str(condition_field)
         return {"errorMessage": errorMessage}
 
     # Select only the relevant rows from the csv data.
@@ -53,12 +53,17 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
 
 
 def get_maximum(csv_dataframe, field, returnType):
-
+    # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
         errorMessage = "A maximum value cannot be acquired. There are no rows of data left."
         return {"errorMessage": errorMessage}
 
-    #The dataframe is not empty.
+    # Check to see if the dataframe has the specified field.
+    try:
+        test = csv_dataframe[field]
+    except KeyError:
+        errorMessage = "The data source does not have a field named: " + str(field)
+        return {"errorMessage": errorMessage}
 
     # Check the return type parameter.
     if returnType != "entire row" and returnType != "value only":
@@ -82,12 +87,17 @@ def get_maximum(csv_dataframe, field, returnType):
 
 
 def get_minimum(csv_dataframe, field, returnType):
-
+    # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
         errorMessage = "A minimum value cannot be acquired. There are no rows of data left."
         return {"errorMessage": errorMessage}
 
-    #The dataframe is not empty.
+    # Check to see if the dataframe has the specified field.
+    try:
+        test = csv_dataframe[field]
+    except KeyError:
+        errorMessage = "The data source does not have a field named: " + str(field)
+        return {"errorMessage": errorMessage}
 
     # Check the return type parameter.
     if returnType != "entire row" and returnType != "value only":
@@ -110,12 +120,57 @@ def get_minimum(csv_dataframe, field, returnType):
         return {"primitive_value": min_value, "errorMessage": None}
 
 
-def get_average(csv_dataframe, field_name):
+def get_average(csv_dataframe, field):
+    # Check to see if the dataframe is empty.
+    if csv_dataframe.empty:
+        errorMessage = "An average value cannot be acquired. There are no rows of data left."
+        return {"errorMessage": errorMessage}
 
-    # Get the average value.
-    average = csv_dataframe[field_name].mean()
+    # Check to see if the dataframe has the specified field.
+    try:
+        test = csv_dataframe[field]
+    except KeyError:
+        errorMessage = "The data source does not have a field named: " + str(field)
+        return {"errorMessage": errorMessage}
 
-    return average
+    # Get the average.
+    average_value = csv_dataframe[field].mean()
+    return {"primitive_value": average_value, "errorMessage": None}
+
+
+def get_sum(csv_dataframe, field):
+    # Check to see if the dataframe is empty.
+    if csv_dataframe.empty:
+        errorMessage = "A sum value cannot be acquired. There are no rows of data left."
+        return {"errorMessage": errorMessage}
+
+    # Check to see if the dataframe has the specified field.
+    try:
+        test = csv_dataframe[field]
+    except KeyError:
+        errorMessage = "The data source does not have a field named: " + str(field)
+        return {"errorMessage": errorMessage}
+
+    # Get the sum.
+    sum_value = csv_dataframe[field].sum()
+    return {"primitive_value": sum_value, "errorMessage": None}
+
+def get_product(csv_dataframe, field):
+    # Check to see if the dataframe is empty.
+    if csv_dataframe.empty:
+        errorMessage = "A product value cannot be acquired. There are no rows of data left."
+        return {"errorMessage": errorMessage}
+
+    # Check to see if the dataframe has the specified field.
+    try:
+        test = csv_dataframe[field]
+    except KeyError:
+        errorMessage = "The data source does not have a field named: " + str(field)
+        return {"errorMessage": errorMessage}
+
+    # Get the product.
+    product_value = csv_dataframe[field].product()
+    return {"primitive_value": product_value, "errorMessage": None}
 
 
 def iterate(csv_input_string):
