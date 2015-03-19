@@ -119,11 +119,10 @@ def get_minimum(csv_dataframe, field, returnType):
         min_value = csv_dataframe[field].min()
         return {"primitive_value": min_value, "errorMessage": None}
 
-
-def get_average(csv_dataframe, field):
+def processingMethodsSet2(csv_dataframe, operationType, field):
     # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
-        errorMessage = "An average value cannot be acquired. There are no rows of data left."
+        errorMessage = "A value cannot be acquired from the " + str(operationType) + " method. There are no rows of data left."
         return {"errorMessage": errorMessage}
 
     # Check to see if the dataframe has the specified field.
@@ -133,44 +132,22 @@ def get_average(csv_dataframe, field):
         errorMessage = "The data source does not have a field named: " + str(field)
         return {"errorMessage": errorMessage}
 
-    # Get the average.
-    average_value = csv_dataframe[field].mean()
-    return {"primitive_value": average_value, "errorMessage": None}
-
-
-def get_sum(csv_dataframe, field):
-    # Check to see if the dataframe is empty.
-    if csv_dataframe.empty:
-        errorMessage = "A sum value cannot be acquired. There are no rows of data left."
+    # Get the average, sum, product, etc.
+    if operationType == "average":
+       primitive_value = csv_dataframe[field].mean()
+    elif operationType == "sum":
+        primitive_value = csv_dataframe[field].sum()
+    elif operationType == "product":
+        primitive_value = csv_dataframe[field].sum()
+    elif operationType == "median":
+        primitive_value = csv_dataframe[field].median()
+    # elif operationType == "mode":
+    #    primitive_value = csv_dataframe[field].mode()
+    else:
+        errorMessage = "The operation type: " + str(operationType) + " is not valid."
         return {"errorMessage": errorMessage}
 
-    # Check to see if the dataframe has the specified field.
-    try:
-        test = csv_dataframe[field]
-    except KeyError:
-        errorMessage = "The data source does not have a field named: " + str(field)
-        return {"errorMessage": errorMessage}
-
-    # Get the sum.
-    sum_value = csv_dataframe[field].sum()
-    return {"primitive_value": sum_value, "errorMessage": None}
-
-def get_product(csv_dataframe, field):
-    # Check to see if the dataframe is empty.
-    if csv_dataframe.empty:
-        errorMessage = "A product value cannot be acquired. There are no rows of data left."
-        return {"errorMessage": errorMessage}
-
-    # Check to see if the dataframe has the specified field.
-    try:
-        test = csv_dataframe[field]
-    except KeyError:
-        errorMessage = "The data source does not have a field named: " + str(field)
-        return {"errorMessage": errorMessage}
-
-    # Get the product.
-    product_value = csv_dataframe[field].product()
-    return {"primitive_value": product_value, "errorMessage": None}
+    return {"primitive_value": primitive_value, "errorMessage": None}
 
 
 def iterate(csv_input_string):

@@ -465,12 +465,6 @@ def dataProcessingMethodSet1():
     dataSourceValue = str(request.args.get('dataSourceValue'))
     returnType = str(request.args.get('returnType'))
 
-    # Check the operationType parameter.
-    if operationType != "maximum" and operationType != "minimum":
-        # Then there was an error. Return the errorMessage.
-        report = {'errorMessage': 'The operation type must equal "maximum" or "minimum".'}
-        return jsonify(report=report)
-
     # Check the dataSource parameters and Get the data source.
     (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
@@ -553,11 +547,6 @@ def dataProcessingMethodSet2():
     dataSourceType = str(request.args.get('dataSourceType'))
     dataSourceValue = str(request.args.get('dataSourceValue'))
 
-    # Check the operationType parameter.
-    if operationType != "average" and operationType != "sum" and operationType != "product":
-        # Then there was an error. Return the errorMessage.
-        report = {'errorMessage': 'The operation type must equal "average", "sum", or "product".'}
-        return jsonify(report=report)
 
     # Check the dataSource parameters and Get the data source.
     (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
@@ -571,17 +560,7 @@ def dataProcessingMethodSet2():
 
 
     # perform the desired processing method.
-    if operationType == "average":
-        # perform the average method.
-        results = computeservice.get_average(csv_dataframe, field)
-    elif operationType == "sum":
-        # perform the sum method.
-        results = computeservice.get_sum(csv_dataframe, field)
-    elif operationType == "product":
-        # perform the product method.
-        results = computeservice.get_product(csv_dataframe, field)
-
-
+    results = computeservice.processingMethodsSet2(csv_dataframe, operationType, field)
 
     # Check for an error.
     if results.get('errorMessage') is not None:
