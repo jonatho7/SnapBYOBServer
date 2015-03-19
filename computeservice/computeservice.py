@@ -52,10 +52,14 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     return {"dataframe": new_csv_dataframe, "errorMessage": None}
 
 
-def get_maximum(csv_dataframe, field, returnType):
+def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
+    """
+    Contains the maximum and minimum methods.
+    """
+
     # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
-        errorMessage = "A maximum value cannot be acquired. There are no rows of data left."
+        errorMessage = "A value cannot be acquired from the " + str(operationType) + " method. There are no rows of data left."
         return {"errorMessage": errorMessage}
 
     # Check to see if the dataframe has the specified field.
@@ -70,56 +74,38 @@ def get_maximum(csv_dataframe, field, returnType):
         errorMessage = 'The return type must equal "entire row" or "value only".'
         return {"errorMessage": errorMessage}
 
-    # Get the maximum.
+    # Get the maximum, minimum, etc.
     if returnType == "entire row":
-        index_of_max = csv_dataframe[field].argmax()
+        if operationType == "maximum":
+            result_index = csv_dataframe[field].argmax()
+        elif operationType == "minimum":
+            result_index = csv_dataframe[field].argmin()
+        else:
+            errorMessage = "The operation type: " + str(operationType) + " is not valid."
+            return {"errorMessage": errorMessage}
 
         # Create a new csv dataframe with only this result.
-        new_csv_dataframe = csv_dataframe[index_of_max:index_of_max+1]
-
+        new_csv_dataframe = csv_dataframe[result_index:result_index+1]
         # Re-index the dataframe
         new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
-
         return {"dataframe": new_csv_dataframe, "errorMessage": None}
     elif returnType == "value only":
-        max_value = csv_dataframe[field].max()
-        return {"primitive_value": max_value, "errorMessage": None}
+        if operationType == "maximum":
+            primitive_value = csv_dataframe[field].max()
+        elif operationType == "minimum":
+            primitive_value = csv_dataframe[field].min()
+        else:
+            errorMessage = "The operation type: " + str(operationType) + " is not valid."
+            return {"errorMessage": errorMessage}
 
+        return {"primitive_value": primitive_value, "errorMessage": None}
 
-def get_minimum(csv_dataframe, field, returnType):
-    # Check to see if the dataframe is empty.
-    if csv_dataframe.empty:
-        errorMessage = "A minimum value cannot be acquired. There are no rows of data left."
-        return {"errorMessage": errorMessage}
-
-    # Check to see if the dataframe has the specified field.
-    try:
-        test = csv_dataframe[field]
-    except KeyError:
-        errorMessage = "The data source does not have a field named: " + str(field)
-        return {"errorMessage": errorMessage}
-
-    # Check the return type parameter.
-    if returnType != "entire row" and returnType != "value only":
-        errorMessage = 'The return type must equal "entire row" or "value only".'
-        return {"errorMessage": errorMessage}
-
-    # Get the minimum.
-    if returnType == "entire row":
-        index_of_min = csv_dataframe[field].argmin()
-
-        # Create a new csv dataframe with only this result.
-        new_csv_dataframe = csv_dataframe[index_of_min:index_of_min+1]
-
-        # Re-index the dataframe
-        new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
-
-        return {"dataframe": new_csv_dataframe, "errorMessage": None}
-    elif returnType == "value only":
-        min_value = csv_dataframe[field].min()
-        return {"primitive_value": min_value, "errorMessage": None}
 
 def processingMethodsSet2(csv_dataframe, operationType, field):
+    """
+    Contains the average, sum, product, median methods.
+    """
+
     # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
         errorMessage = "A value cannot be acquired from the " + str(operationType) + " method. There are no rows of data left."

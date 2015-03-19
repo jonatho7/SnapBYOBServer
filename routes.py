@@ -475,29 +475,8 @@ def dataProcessingMethodSet1():
     else:
         csv_dataframe = methodReturnValue
 
-    # perform the desired processing method.
-    if operationType == "maximum":
-        # perform the maximum method.
-        results = computeservice.get_maximum(csv_dataframe, field, returnType)
-        # Check for an error.
-        if results.get('errorMessage') is not None:
-            # Then there was an error. Return the errorMessage.
-            report = {'errorMessage': results.get('errorMessage')}
-            return jsonify(report=report)
-
-        if returnType == "entire row":
-            variable_type = "dataframe"
-            variable_value = results.get('dataframe')
-        elif returnType == "value only":
-            variable_type = "primitive"
-            variable_value = results.get('primitive_value')
-        else:
-            # Then there was an error. Return the errorMessage.
-            report = {'errorMessage': 'The return type must equal "entire row" or "value only".'}
-            return jsonify(report=report)
-    elif operationType == "minimum":
-        # perform the minimum method.
-        results = computeservice.get_minimum(csv_dataframe, field, returnType)
+    # perform the maximum, minimimum, etc.
+        results = computeservice.processingMethodsSet1(csv_dataframe, operationType, field, returnType)
         # Check for an error.
         if results.get('errorMessage') is not None:
             # Then there was an error. Return the errorMessage.
