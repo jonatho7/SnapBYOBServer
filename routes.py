@@ -201,7 +201,7 @@ def fakeWeather():
     return jsonify(temp=53)
     
 
-@app.route('/weather')
+@app.route('/api/dataservice/weather')
 def weather():
     locationString = request.args.get('location')
     weatherReport = weatherservice.get_report(locationString)
@@ -214,13 +214,13 @@ def weather():
     
     return jsonify(weatherReport=weatherReport)
     
-@app.route('/redditPosts')
+@app.route('/api/dataservice/redditPosts')
 def redditPosts():
     subreddit = request.args.get('subreddit')
     posts = red.get_posts_as_json(subreddit,'hot',False)
     return jsonify(redditReport=posts)
 
-@app.route('/redditComments')
+@app.route('/api/dataservice/redditComments')
 def redditComments():
     postID = str(request.args.get('postID'))
     sort_mode='hot'
@@ -231,7 +231,7 @@ def redditComments():
     return jsonify(redditReport=commentsJson)
     #TODO. Can I return without using jsonify, bc it is already in json format?
 
-@app.route('/stocks')
+@app.route('/api/dataservice/stocks')
 def stocks():
     try:
         stockQuery = str(request.args.get('stockQuery'))
@@ -240,7 +240,7 @@ def stocks():
     except stockservice.StockServiceException:
         return jsonify(stockReport="")
     
-@app.route('/twitter')
+@app.route('/api/dataservice/twitter')
 def twitter():
     #Get the request parameters.
     twitterFactor = str(request.args.get('twitterFactor'))
@@ -265,21 +265,21 @@ def twitter():
     #Return the results.
     return jsonify(twitterReport=twitterReport)
 
-@app.route('/location')
+@app.route('/api/dataservice/location')
 def location():
     # Get the request parameters.
-    address = str(request.args.get('address'))
+    address = str(request.args.get('location'))
 
     # Get the latitude and longitude values.
     locationReport = locationservice.get_lat_and_long(address)
     return jsonify(locationReport=locationReport)
 
-@app.route('/earthquakes')
+@app.route('/api/dataservice/earthquakes')
 def earthquakes():
     # Get the request parameters.
     earthquakePeriod = str(request.args.get('earthquakePeriod'))
 
-    # Get the latitude and longitude values.
+    # Get the earthquake report.
     earthquakeReport = earthquakeservice.get_report(earthquakePeriod, 'all')
     return jsonify(earthquakeReport=earthquakeReport)
 
@@ -303,7 +303,7 @@ def reportDataFromColumn():
 
 # Data Tools Blocks - Start
 
-@app.route('/urlRequestForClient')
+@app.route('/api/dataservice/urlRequestForClient')
 def urlRequestForClient():
     #Get the request parameters.
     urlString = str(request.args.get('urlString'))
@@ -322,7 +322,7 @@ def urlRequestForClient():
     #Return the results.
     return jsonify(urlReport=urlReport)
 
-@app.route('/dataProcessing/doSetCloudVariable')
+@app.route('/api/cloudvariables/doSetCloudVariable')
 def doSetCloudVariable():
     # Get the request parameters.
     user_id = str(request.args.get('user_id'))
@@ -350,7 +350,7 @@ def doSetCloudVariable():
     return jsonify(report=report)
 
 
-@app.route('/dataProcessing/doRetrieveDataFromCloudVariable')
+@app.route('/api/cloudvariables/doRetrieveDataFromCloudVariable')
 def doRetrieveDataFromCloudVariable():
     #Get the request parameters.
     user_id = str(request.args.get('user_id'))
@@ -396,8 +396,8 @@ def doRetrieveDataFromCloudVariable():
 
 
 
-@app.route('/dataProcessing/select')
-def dataProcessingSelect():
+@app.route('/api/dataprocessing/select')
+def dataprocessingSelect():
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
 
@@ -415,7 +415,7 @@ def dataProcessingSelect():
     dataSourceValue = str(request.args.get('dataSourceValue'))
 
     # Check the dataSource parameters and Get the data source.
-    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
         return methodReturnValue
     elif methodReturnValue is None:
@@ -449,8 +449,8 @@ def dataProcessingSelect():
     report = {'data': data}
     return jsonify(report=report)
 
-@app.route('/dataProcessing/methodSet1')
-def dataProcessingMethodSet1():
+@app.route('/api/dataprocessing/methodSet1')
+def dataprocessingMethodSet1():
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
 
@@ -466,7 +466,7 @@ def dataProcessingMethodSet1():
     returnType = str(request.args.get('returnType'))
 
     # Check the dataSource parameters and Get the data source.
-    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
         return methodReturnValue
     elif methodReturnValue is None:
@@ -510,8 +510,8 @@ def dataProcessingMethodSet1():
     return jsonify(report=report)
 
 
-@app.route('/dataProcessing/methodSet2')
-def dataProcessingMethodSet2():
+@app.route('/api/dataprocessing/methodSet2')
+def dataprocessingMethodSet2():
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
     import numpy as np
@@ -528,7 +528,7 @@ def dataProcessingMethodSet2():
 
 
     # Check the dataSource parameters and Get the data source.
-    (errorReport , methodReturnValue) = getDataSource(pandas, user_id, dataSourceType, dataSourceValue)
+    (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue)
     if errorReport == "errorOccurred":
         return methodReturnValue
     elif methodReturnValue is None:
@@ -567,7 +567,7 @@ def dataProcessingMethodSet2():
 
 
 
-def getDataSource(pandas, user_id, dataSourceType, dataSourceValue):
+def verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue):
     # If dataSourceType is a url.
     if dataSourceType == "url":
         # Read in the csv file.
