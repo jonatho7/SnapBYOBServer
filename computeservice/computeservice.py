@@ -59,8 +59,7 @@ def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
 
     # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
-        errorMessage = "A value cannot be acquired from the " + str(operationType) + " method. There are no rows of data left."
-        return {"errorMessage": errorMessage}
+        return {"primitive_value": "None", "errorMessage": None}
 
     # Check to see if the dataframe has the specified field.
     try:
@@ -106,10 +105,11 @@ def processingMethodsSet2(csv_dataframe, operationType, field):
     Contains the average, sum, product, median methods.
     """
 
+    import numpy as np
+
     # Check to see if the dataframe is empty.
     if csv_dataframe.empty:
-        errorMessage = "A value cannot be acquired from the " + str(operationType) + " method. There are no rows of data left."
-        return {"errorMessage": errorMessage}
+        return {"primitive_value": "None", "errorMessage": None}
 
     # Check to see if the dataframe has the specified field.
     try:
@@ -123,8 +123,9 @@ def processingMethodsSet2(csv_dataframe, operationType, field):
        primitive_value = csv_dataframe[field].mean()
     elif operationType == "sum":
         primitive_value = csv_dataframe[field].sum()
+        primitive_value = np.asscalar(primitive_value)
     elif operationType == "product":
-        primitive_value = csv_dataframe[field].sum()
+        primitive_value = csv_dataframe[field].product()
     elif operationType == "median":
         primitive_value = csv_dataframe[field].median()
     # elif operationType == "mode":
