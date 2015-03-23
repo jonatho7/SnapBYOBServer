@@ -374,7 +374,7 @@ def doRetrieveDataFromCloudVariable():
         if isinstance(variable_value_object, str) or isinstance(variable_value_object, (int, long, float)):
             # variable_value is simply a string or a number. Just return it.
             variable_value = user_cloud_variables[user_id][variable_name]
-            report = {'data': variable_value, 'wasValueRetrieved': True}
+            report = {'data': variable_value, "data_type" : "primitive", 'wasValueRetrieved': True}
             return jsonify(report=report)
         elif isinstance(variable_value_object, dict):
             if (variable_value_object.get('variable_type') is not None) and (variable_value_object.get('variable_contents') is not None):
@@ -385,8 +385,9 @@ def doRetrieveDataFromCloudVariable():
                     temp_var = StringIO.StringIO()
                     variable_value.to_csv(temp_var)
                     csv_output_string = temp_var.getvalue()
+                    data_type = "dataframe"
 
-                    report = {'data': csv_output_string, 'wasValueRetrieved': True}
+                    report = {'data': csv_output_string, 'data_type' : data_type, 'wasValueRetrieved': True}
                     return jsonify(report=report)
 
     else:
