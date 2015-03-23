@@ -452,6 +452,8 @@ def dataprocessingSelect():
 
 @app.route('/api/dataprocessing/methodSet1')
 def dataprocessingMethodSet1():
+    #For the maximum and minimum methods.
+
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
 
@@ -513,6 +515,8 @@ def dataprocessingMethodSet1():
 
 @app.route('/api/dataprocessing/methodSet2')
 def dataprocessingMethodSet2():
+    # For the average, median, sum, product, etc. methods.
+
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
     import numpy as np
