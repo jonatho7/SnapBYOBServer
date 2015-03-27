@@ -397,7 +397,7 @@ def doRetrieveDataFromCloudVariable():
 
 
 
-@app.route('/api/dataprocessing/select')
+@app.route('/api/internaldataprocessing/select')
 def dataprocessingSelect():
     # pandas is only required for a few of the data processing operations.
     import pandas as pandas
@@ -450,7 +450,7 @@ def dataprocessingSelect():
     report = {'data': data}
     return jsonify(report=report)
 
-@app.route('/api/dataprocessing/methodSet1')
+@app.route('/api/internaldataprocessing/methodSet1')
 def dataprocessingMethodSet1():
     #For the maximum and minimum methods.
 
@@ -513,7 +513,7 @@ def dataprocessingMethodSet1():
     return jsonify(report=report)
 
 
-@app.route('/api/dataprocessing/methodSet2')
+@app.route('/api/internaldataprocessing/methodSet2')
 def dataprocessingMethodSet2():
     # For the average, median, sum, product, etc. methods.
 
