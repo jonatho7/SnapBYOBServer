@@ -433,8 +433,8 @@ def dataprocessingSelect():
         report = {'errorMessage': results.get('errorMessage')}
         return jsonify(report=report)
 
-    variable_type = "dataframe"
-    variable_value = results.get('dataframe')
+    variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
+    variable_value = results.get('variable_value')
 
     # Testing.
     app.logger.debug(variable_value)
@@ -479,23 +479,16 @@ def dataprocessingMethodSet1():
         csv_dataframe = methodReturnValue
 
     # perform the maximum, minimimum, etc.
-        results = computeservice.processingMethodsSet1(csv_dataframe, operationType, field, returnType)
-        # Check for an error.
-        if results.get('errorMessage') is not None:
-            # Then there was an error. Return the errorMessage.
-            report = {'errorMessage': results.get('errorMessage')}
-            return jsonify(report=report)
+    results = computeservice.processingMethodsSet1(csv_dataframe, operationType, field, returnType)
+    # Check for an error.
+    if results.get('errorMessage') is not None:
+        # Then there was an error. Return the errorMessage.
+        report = {'errorMessage': results.get('errorMessage')}
+        return jsonify(report=report)
 
-        if returnType == "entire row":
-            variable_type = "dataframe"
-            variable_value = results.get('dataframe')
-        elif returnType == "value only":
-            variable_type = "primitive"
-            variable_value = results.get('primitive_value')
-        else:
-            # Then there was an error. Return the errorMessage.
-            report = {'errorMessage': 'The return type must equal "entire row" or "value only".'}
-            return jsonify(report=report)
+
+    variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
+    variable_value = results.get('variable_value')
 
     # Testing
     app.logger.debug(variable_value)
@@ -552,8 +545,8 @@ def dataprocessingMethodSet2():
         report = {'errorMessage': results.get('errorMessage')}
         return jsonify(report=report)
 
-    variable_type = "primitive"
-    variable_value = results.get('primitive_value')
+    variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
+    variable_value = results.get('variable_value')
 
     # Testing
     app.logger.debug(variable_value)

@@ -8,6 +8,17 @@ def setup_debugger(logger_reference):
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
     import numpy as np
 
+    logger.debug(condition_field)
+    logger.debug(condition_operator)
+    logger.debug(condition_value)
+
+    # Check to see if the dataframe is empty.
+    try:
+        if csv_dataframe.empty:
+            return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
+    except AttributeError:
+        return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
+
     # convert condition_value to the same type as the condition_field so comparisons can be made.
     try:
         if isinstance(csv_dataframe[condition_field][0], np.float):
@@ -49,7 +60,7 @@ def select_method(csv_dataframe, condition_field, condition_operator, condition_
     # debugging.
     # logger.debug(new_csv_dataframe)
 
-    return {"dataframe": new_csv_dataframe, "errorMessage": None}
+    return {"variable_type": "dataframe", "variable_value": new_csv_dataframe, "errorMessage": None}
 
 
 def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
@@ -58,8 +69,11 @@ def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
     """
 
     # Check to see if the dataframe is empty.
-    if csv_dataframe.empty:
-        return {"primitive_value": "None", "errorMessage": None}
+    try:
+        if csv_dataframe.empty:
+            return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
+    except AttributeError:
+        return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
 
     # Check to see if the dataframe has the specified field.
     try:
@@ -87,7 +101,7 @@ def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
         new_csv_dataframe = csv_dataframe[result_index:result_index+1]
         # Re-index the dataframe
         new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
-        return {"dataframe": new_csv_dataframe, "errorMessage": None}
+        return {"variable_type": "dataframe", "variable_value": new_csv_dataframe, "errorMessage": None}
     elif returnType == "value only":
         if operationType == "maximum":
             primitive_value = csv_dataframe[field].max()
@@ -97,7 +111,7 @@ def processingMethodsSet1(csv_dataframe, operationType, field, returnType):
             errorMessage = "The operation type: " + str(operationType) + " is not valid."
             return {"errorMessage": errorMessage}
 
-        return {"primitive_value": primitive_value, "errorMessage": None}
+        return {"variable_type":"primitive", "variable_value": primitive_value, "errorMessage": None}
 
 
 def processingMethodsSet2(csv_dataframe, operationType, field):
@@ -108,8 +122,11 @@ def processingMethodsSet2(csv_dataframe, operationType, field):
     import numpy as np
 
     # Check to see if the dataframe is empty.
-    if csv_dataframe.empty:
-        return {"primitive_value": "None", "errorMessage": None}
+    try:
+        if csv_dataframe.empty:
+            return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
+    except AttributeError:
+        return {"variable_type" : "primitive", "variable_value": "None", "errorMessage": None}
 
     # Check to see if the dataframe has the specified field.
     try:
@@ -134,7 +151,7 @@ def processingMethodsSet2(csv_dataframe, operationType, field):
         errorMessage = "The operation type: " + str(operationType) + " is not valid."
         return {"errorMessage": errorMessage}
 
-    return {"primitive_value": primitive_value, "errorMessage": None}
+    return {"variable_type" : "primitive", "variable_value": primitive_value, "errorMessage": None}
 
 
 def iterate(csv_input_string):
