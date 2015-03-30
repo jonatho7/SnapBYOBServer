@@ -268,7 +268,7 @@ def twitter():
 @app.route('/api/dataservice/location')
 def location():
     # Get the request parameters.
-    address = str(request.args.get('location'))
+    address = str(request.args.get('address'))
 
     # Get the latitude and longitude values.
     locationReport = locationservice.get_lat_and_long(address)
