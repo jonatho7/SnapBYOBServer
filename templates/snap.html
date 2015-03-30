@@ -70,12 +70,16 @@
 			var world;
             var global_ide;
 			window.onload = function () {
-                world = new WorldMorph(document.getElementById('world'));
-                world.worldCanvas.focus();
 
+                // Auto-resize world.
+                // world = new WorldMorph(document.getElementById('world'));
+
+                // Fixed size world
+                world = new WorldMorph(document.getElementById('world'), false);
+
+                world.worldCanvas.focus();
                 global_ide = new IDE_Morph;
                 global_ide.openIn(world);
-				//new IDE_Morph().openIn(world);
 
                 //global_ide.setStageExtent(new Point(480, 600));
                 //world.isDevMode = true;
@@ -91,8 +95,14 @@
 	</head>
 	<body style="margin: 0;">
 
-        <canvas id="world" tabindex="1"></canvas>
+        <!-- Auto-resize world -->
+        <!-- <canvas id="world" tabindex="1"></canvas> -->
 
+        <!-- Fixed size world-->
+        <canvas id="world" tabindex="1" width="1262" height="692" ></canvas>
+
+        <!--
+        Show the map size bar.
 
         <div style="padding: 10px 30px;">
             <div>
@@ -110,12 +120,10 @@
 
                 <button type="button" class="changeMapSizeButton">Go</button>
             </div>
-
-            <div id="map-canvas" style="width: 1024px; height: 576px; margin-top: 30px;">
-            </div>
         </div>
+        -->
 
-
+        <div id="map-canvas" style="width: 480px; height: 327px; margin-top: 0px;"></div>
 
 
 

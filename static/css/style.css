@@ -10,3 +10,9 @@
 .mapWidthTitle {
     margin-left: 20px;
 }
+
+#map-canvas {
+    position: absolute;
+    top: 365px;
+    left: 782px;
+}
