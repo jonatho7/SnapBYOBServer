@@ -61,3 +61,11 @@ h4 {
 .h3Div {
     margin-left: 70px;
 }
+
+.h3Title {
+    font-weight: bold;
+}
+
+.versionOfSnapDiv, .realTimeDiv {
+    margin-top: 4em;
+}

@@ -54,35 +54,58 @@
 
     <div class="textArea">
         <h2><b>DataSnap</b></h2>
-        <h4>This version of Snap! will add <b>real-time</b> and <b>big-data</b> libraries into the Snap! platform.</h4>
-        <h4>This project aims to enrich the curricula of online educational programming platforms in order to convince students that studying computer science is <b>important</b>, <b>relevant</b>, and <b>related</b> to their day-to-day experiences.</h4>
+
+        <h4>Drag-and-Drop programming for <b>introductory programmers</b> and <b>domain-experts</b></h4>
+
+
 
         <div class="leftPanel">
-            <h5 class="panelElement">Launch a quick example built in Snap!</h5>
-            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/Snap-Demo.xml">Launch Snap! Demo »</a></p>
+            <h5 class="panelElement">Launch a quick example built in DataSnap</h5>
+            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/Snap-Demo.xml">Launch DataSnap Demo »</a></p>
             <br class="panelElement">
-            <h5 class="panelElement">Launch empty Snap! window</h5>
-            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap')}}">Launch Snap! »</a></p>
-
+            <h5 class="panelElement">Launch empty DataSnap window</h5>
+            <p class="panelElement"><a class="btn btn-lg btn-primary" role="button" href="{{ url_for('snap')}}">Launch DataSnap »</a></p>
         </div>
-
         <div class="rightPanel">
             <img class="panelElement" src="{{ SITE_URL_BASE }}/static/img/sampleProgram.png" alt="Sample Snap Program">
+        </div>
+
+        <div class="breakFloat"></div>
+
+        <h3 class="h3Title">Introductory Programmers</h3>
+        <h4>This project aims to enrich the curricula of online educational programming platforms in order to convince students that studying computer science is <b>important</b>, <b>relevant</b>, and <b>related</b> to their day-to-day experiences.</h4>
+
+        <h3 class="h3Title">Domain-Experts</h3>
+        <h4>Furthermore, DataSnap is not just designed for educational contexts. The platform can enable domain experts who commonly possess little programming expertise to both analyze data and visualize their results.</h4>
+        <hr/>
+
+        <div class="versionOfSnapDiv">
+            <h4>Data will add the following to the original Snap! platform:</h4>
+            <ul>
+                <li><h5><b>real-time</b> and <b>big-data</b> libraries into the Snap! platform</h5></li>
+                <li><h5>big-data import from a user's private data sets</h5></li>
+                <li><h5>the use of computational resources (cloud servers) to speed up the processing of big data</h5></li>
+                <li><h5>combining third-party visualization libraries to provide domain experts and other users with easy-to-use interfaces to visualize their results</h5></li>
+            </ul>
+            <hr/>
         </div>
 
     </div>
 
     <div class="breakFloat"></div>
 
+    <div class="realTimeDiv">
     <h3>Real-Time and Big-Data Libraries:</h3>
-    <ul>
-        <li><h5>Weather Data</h5></li>
-        <li><h5>Google Finance Data</h5></li>
-        <li><h5>Twitter Data</h5></li>
-        <li><h5>Reddit Data</h5></li>
-        <li><h5>Google GeoCoding Data</h5></li>
-        <li><h5>USGS Earthquakes Data</h5></li>
-    </ul>
+        <ul>
+            <li><h5>Weather Data</h5></li>
+            <li><h5>Google Finance Data</h5></li>
+            <li><h5>Twitter Data</h5></li>
+            <li><h5>Reddit Data</h5></li>
+            <li><h5>Google GeoCoding Data</h5></li>
+            <li><h5>USGS Earthquakes Data</h5></li>
+        </ul>
+        <hr/>
+    </div>
 
     <div class="textArea800">
         <br><br>
@@ -119,6 +142,7 @@
                 </li>
             </ul>
         </div>
+        <hr/>
     </div>
 
 
