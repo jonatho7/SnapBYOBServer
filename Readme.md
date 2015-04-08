@@ -1,6 +1,6 @@
 
 
-# Custom Implementation of Snap!
+# DataSnap
 
 This is the main repository for the custom implementation of the open-source Snap! platform. This version of Snap! will add real-time and big-data libraries into the Snap! platform.
 
