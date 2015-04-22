@@ -409,11 +409,26 @@ def dataprocessingSelect():
     user_id = str(request.args.get('user_id'))
     isSelectAllFields = str(request.args.get('isSelectAllFields'))
     selectedFields = str(request.args.get('selectedFields'))
-    condition_field = str(request.args.get('conditionField'))
-    condition_operator = str(request.args.get('conditionOperator'))
-    condition_value = str(request.args.get('conditionValue'))
     dataSourceType = str(request.args.get('dataSourceType'))
     dataSourceValue = str(request.args.get('dataSourceValue'))
+
+    numberOfConditions = str(request.args.get('numberOfConditions'))
+    condition_field = []
+    condition_operator = []
+    condition_value = []
+
+    # Gather the conditions. There may be multiple.
+    for i in range(0, int(numberOfConditions)):
+        tempValue = str(request.args.get( 'conditionField' + str(i) ))
+        condition_field.append(tempValue)
+
+        tempValue = str(request.args.get( 'conditionOperator' + str(i) ))
+        condition_operator.append(tempValue)
+
+        tempValue = str(request.args.get( 'conditionValue' + str(i) ))
+        condition_value.append(tempValue)
+
+
 
     # Check the dataSource parameters and Get the data source.
     (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue)
@@ -427,14 +442,21 @@ def dataprocessingSelect():
 
 
     # perform the select method.
-    results = computeservice.select_method(csv_dataframe, condition_field, condition_operator, condition_value)
-    # Check for an error.
-    if results.get('errorMessage') is not None:
-        report = {'errorMessage': results.get('errorMessage')}
-        return jsonify(report=report)
+    # todo. perform multiple selects if there are multiple conditions.
+    for counter in range(0, int(numberOfConditions)):
 
-    variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
-    variable_value = results.get('variable_value')
+        results = computeservice.select_method(csv_dataframe, condition_field[counter], condition_operator[counter], condition_value[counter])
+        # Check for an error.
+        if results.get('errorMessage') is not None:
+            report = {'errorMessage': results.get('errorMessage')}
+            return jsonify(report=report)
+
+        variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
+        variable_value = results.get('variable_value')
+
+        csv_dataframe = variable_value
+
+
 
     # Testing.
     app.logger.debug(variable_value)
