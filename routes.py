@@ -587,6 +587,70 @@ def dataprocessingMethodSet2():
 
 
 
+@app.route('/api/internaldataprocessing/append')
+def dataprocessingAppend():
+    # pandas is only required for a few of the data processing operations.
+    import pandas as pandas
+
+    # Setup the debugger.
+    computeservice.setup_debugger(app.logger)
+
+    # Get the request parameters.
+    user_id = str(request.args.get('user_id'))
+    dataSourceType0 = str(request.args.get('dataSourceType0'))
+    dataSourceValue0 = str(request.args.get('dataSourceValue0'))
+    dataSourceType1 = str(request.args.get('dataSourceType1'))
+    dataSourceValue1 = str(request.args.get('dataSourceValue1'))
+
+
+    # Check the dataSource parameters and Get the data source.
+    (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType0, dataSourceValue0)
+    if errorReport == "errorOccurred":
+        return methodReturnValue
+    elif methodReturnValue is None:
+        report = {'errorMessage': "The data source type for the first CSV was not a cloud variable."}
+        return jsonify(report=report)
+    else:
+        csv_dataframe0 = methodReturnValue
+
+    # Check the dataSource parameters and Get the data source.
+    (errorReport , methodReturnValue) = verifyAndGetDataSource(pandas, user_id, dataSourceType1, dataSourceValue1)
+    if errorReport == "errorOccurred":
+        return methodReturnValue
+    elif methodReturnValue is None:
+        report = {'errorMessage': "The data source type for the second CSV was not a cloud variable."}
+        return jsonify(report=report)
+    else:
+        csv_dataframe1 = methodReturnValue
+
+    # perform the append method.
+    results = computeservice.append_method(csv_dataframe0, csv_dataframe1)
+    # Check for an error.
+    if results.get('errorMessage') is not None:
+        report = {'errorMessage': results.get('errorMessage')}
+        return jsonify(report=report)
+
+    variable_type = results.get('variable_type')    #variable_type = "dataframe" or "primitive"
+    variable_value = results.get('variable_value')
+
+
+    # Testing.
+    app.logger.debug(variable_value)
+
+    '''
+    Store the result of the processing operation in the serverCloudVariables dictionary.
+    Then receive a variable_reference_index which is a number which is used to later reference the stored variable.
+    '''
+    variable_reference_index = storeInServerCloudVariablesDictionary(user_id, variable_type, variable_value)
+
+    # form a report with a reference to the variable on the cloud and then return it.
+    data = {'variable_reference_index': variable_reference_index, "errorMessage": None}
+    report = {'data': data}
+    return jsonify(report=report)
+
+
+
+
 def verifyAndGetDataSource(pandas, user_id, dataSourceType, dataSourceValue):
     # If dataSourceType is a url.
     if dataSourceType == "url":

@@ -154,6 +154,43 @@ def processingMethodsSet2(csv_dataframe, operationType, field):
     return {"variable_type" : "primitive", "variable_value": primitive_value, "errorMessage": None}
 
 
+
+
+def append_method(csv_dataframe0, csv_dataframe1):
+    import numpy as np
+
+
+    # Check to see if csv_dataframe0 is empty.
+    try:
+        if csv_dataframe0.empty:
+            return {"variable_type": "primitive", "variable_value": "None", "errorMessage": None}
+    except AttributeError:
+        return {"variable_type": "primitive", "variable_value": "None", "errorMessage": None}
+
+    # Check to see if csv_dataframe1 is empty.
+    try:
+        if csv_dataframe1.empty:
+            return {"variable_type": "primitive", "variable_value": "None", "errorMessage": None}
+    except AttributeError:
+        return {"variable_type": "primitive", "variable_value": "None", "errorMessage": None}
+
+
+    # Perform the append operation.
+    new_csv_dataframe = csv_dataframe0.append(csv_dataframe1)
+
+
+    # Re-index the dataframe
+    new_csv_dataframe = new_csv_dataframe.reset_index(drop=True)
+
+
+    # debugging.
+    # logger.debug(new_csv_dataframe)
+
+
+    return {"variable_type": "dataframe", "variable_value": new_csv_dataframe, "errorMessage": None}
+
+
+
 def iterate(csv_input_string):
     import pandas as pandas
     import numpy as np
