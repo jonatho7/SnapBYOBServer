@@ -30,6 +30,7 @@
         <!--Custom CSS added to project-->
         <link href="{{ SITE_URL_BASE }}/static/css/style.css" rel="stylesheet">
 
+
         <!--Google Maps-->
         <!--Using my personal key. This key need not be private because only certain websites can use this specific key. Configure this in Google API's Console.-->
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDIh3KocIcco9npZsjy9C1GqVjWz_XCjM"></script>
@@ -63,14 +64,25 @@
 
         </script>
 
+
+
         <!--Snap World Startup.-->
 		<script type="text/javascript">
 			var world;
+            var global_ide;
 			window.onload = function () {
-                world = new WorldMorph(document.getElementById('world'), false);
-                world.worldCanvas.focus();
-				new IDE_Morph().openIn(world);
 
+                // Auto-resize world.
+                // world = new WorldMorph(document.getElementById('world'));
+
+                // Fixed size world
+                world = new WorldMorph(document.getElementById('world'), false);
+
+                world.worldCanvas.focus();
+                global_ide = new IDE_Morph;
+                global_ide.openIn(world);
+
+                //global_ide.setStageExtent(new Point(480, 600));
                 //world.isDevMode = true;
 
 				setInterval(loop, 1);
@@ -82,11 +94,18 @@
 
 
 	</head>
-	<body style="margin: 0;">
+	<body style="margin: 0; background-color: #373737; ">
 
-        <canvas id="world" tabindex="1" width="1200" height="500"></canvas>
+        <!-- Auto-resize world -->
+        <!-- <canvas id="world" tabindex="1"></canvas> -->
 
-    	<div style="padding: 10px 30px;">
+        <!-- Fixed size world-->
+        <canvas id="world" tabindex="1" width="1262" height="692" ></canvas>
+
+        <!--
+        Show the map size bar.
+
+        <div style="padding: 10px 30px;">
             <div>
 
                 <p class="mapSizeTitle"><strong>Map Size: </strong></p>
@@ -102,10 +121,18 @@
 
                 <button type="button" class="changeMapSizeButton">Go</button>
             </div>
-
-            <div id="map-canvas" style="width: 1024px; height: 576px; margin-top: 30px;">
-            </div>
         </div>
+        -->
+
+        <div id="map-canvas" style="width: 480px; height: 327px; margin-top: 0px;"></div>
+
+
+
+
+
+
+        <!--Div at the bottom for some extra space.-->
+        <div style="height: 40px;"></div>
 
     </body>
 </html>
