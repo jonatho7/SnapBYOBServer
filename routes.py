@@ -160,6 +160,18 @@ def contact():
 def snap():
     return render_template('snap.html', SITE_URL_BASE=SITE_URL_BASE)
 
+
+
+@app.route('/learn/fluDataAnalysis')
+def learnFluDataAnalysis():
+    return render_template('learn/fluDataAnalysis.html', SITE_URL_BASE=SITE_URL_BASE)
+
+@app.route('/learnFluDataAnalysisSnap')
+def learnFluDataAnalysisSnap():
+    return render_template('learn/fluDataAnalysisSnap.html', SITE_URL_BASE=SITE_URL_BASE)
+
+
+
 @app.route('/learn/iteration')
 def learnIteration():
     return render_template('learn/iteration.html', SITE_URL_BASE=SITE_URL_BASE)

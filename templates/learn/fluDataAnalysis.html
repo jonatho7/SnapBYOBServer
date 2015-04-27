@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <title>DataSnap</title>
+
+        <!--Load jQuery.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/js/jquery-1.11.1.min.js"></script>
+
+        <!--Custom JS added to project.-->
+        <script type="text/javascript" src="{{ SITE_URL_BASE }}/static/Snap/controlScripts.js"></script>
+
+        <!--Custom CSS added to project.-->
+        <link href="{{ SITE_URL_BASE }}/static/css/snapCSS.css" rel="stylesheet">
+
+    </head>
+
+
+    <body>
+        <div style="margin-left: 10px;">
+            <h1>Flu Data Analysis Example</h1>
+        </div>
+
+        <iframe id="myFrame" src="{{ url_for('learnFluDataAnalysisSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/DomainExperts/Epidemiology/epidemiology2.xml" width="1262" height="692" style="margin: 0px 10px;">
+            This is an iFrame. If you see this message, it is still loading.
+        </iframe>
+
+
+        <!--Div at the bottom for some extra space.-->
+        <div style="height: 100px;"></div>
+
+    </body>
+</html>
