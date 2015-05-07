@@ -13,6 +13,6 @@
 
 #map-canvas {
     position: absolute;
-    top: 365px;
-    left: 782px;
+    bottom: 0px;
+    right: 0px;
 }

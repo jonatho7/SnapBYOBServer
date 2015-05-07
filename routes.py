@@ -13,8 +13,8 @@ from sheetsservice import sheetsservice
 from computeservice import computeservice as computeservice
 import StringIO
 import xml.etree.ElementTree as element_tree
-from server_configuration import SITE_URL_BASE, SERVER_URL_BASE, LOCAL_URL_BASE
-
+from server_configuration import *
+from problem_configuration import *
 
 
 # Uncomment these next lines for logging on the think.cs.vt.edu server.
@@ -122,7 +122,7 @@ def _get(urlString):
 def urlRequest(urlString):
     newURLString = "http://" + urlString
     rawResponseJSONAsString = _get(newURLString)
-    app.logger.debug(type(rawResponseJSONAsString))
+    # app.logger.debug(type(rawResponseJSONAsString))
 
     #Form the response.
     report = {'data': rawResponseJSONAsString}
@@ -158,7 +158,15 @@ def contact():
 # Learn Category
 @app.route('/snap')
 def snap():
-    return render_template('snap.html', SITE_URL_BASE=SITE_URL_BASE)
+
+    # Opt1. Grab the optional parameters which can define the snap problem layout.
+    includeMap = str(request.args.get('includeMap'))
+    if includeMap == "True" or includeMap == "true":
+        problem_config['include_map'] = True
+    else:
+        problem_config['include_map'] = False
+
+    return render_template('snap.html', SITE_URL_BASE=SITE_URL_BASE, problem_config=problem_config)
 
 
 
@@ -166,36 +174,27 @@ def snap():
 def learnFluDataAnalysis():
     return render_template('learn/fluDataAnalysis.html', SITE_URL_BASE=SITE_URL_BASE)
 
-@app.route('/learnFluDataAnalysisSnap')
-def learnFluDataAnalysisSnap():
-    return render_template('learn/fluDataAnalysisSnap.html', SITE_URL_BASE=SITE_URL_BASE)
-
 
 
 @app.route('/learn/iteration')
 def learnIteration():
     return render_template('learn/iteration.html', SITE_URL_BASE=SITE_URL_BASE)
 
-@app.route('/learnIterationSnap')
-def learnIterationSnap():
-    return render_template('learn/iterationSnap.html', SITE_URL_BASE=SITE_URL_BASE)
+
+@app.route('/learn/twitter')
+def learnTwitter():
+    return render_template('learn/twitter.html', SITE_URL_BASE=SITE_URL_BASE)
+
+
 
 @app.route('/learn/streamingData/stocks')
 def learnStreamingDataStocks():
     return render_template('learn/streamingData/streamingStocks.html', SITE_URL_BASE=SITE_URL_BASE)
 
-@app.route('/learnStreamingDataStocksSnap')
-def learnStreamingDataStocksSnap():
-    return render_template('learn/streamingData/streamingStocksSnap.html', SITE_URL_BASE=SITE_URL_BASE)
 
 @app.route('/learn/visualizingData/earthquake')
 def learnVisualizingDataEarthquake():
     return render_template('learn/visualizingData/earthquake.html', SITE_URL_BASE=SITE_URL_BASE)
-
-@app.route('/learnVisualizingDataEarthquakeSnap')
-def learnVisualizingDataEarthquakeSnap():
-    return render_template('learn/visualizingData/earthquakeSnap.html', SITE_URL_BASE=SITE_URL_BASE)
-
 
 
 # Testing
@@ -471,7 +470,7 @@ def dataprocessingSelect():
 
 
     # Testing.
-    app.logger.debug(variable_value)
+    # app.logger.debug(variable_value)
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.
@@ -525,8 +524,8 @@ def dataprocessingMethodSet1():
     variable_value = results.get('variable_value')
 
     # Testing
-    app.logger.debug(variable_value)
-    app.logger.debug(type(variable_value))
+    #app.logger.debug(variable_value)
+    #app.logger.debug(type(variable_value))
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.
@@ -583,8 +582,8 @@ def dataprocessingMethodSet2():
     variable_value = results.get('variable_value')
 
     # Testing
-    app.logger.debug(variable_value)
-    app.logger.debug(type(variable_value))
+    # app.logger.debug(variable_value)
+    # app.logger.debug(type(variable_value))
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.
@@ -647,7 +646,7 @@ def dataprocessingAppend():
 
 
     # Testing.
-    app.logger.debug(variable_value)
+    # app.logger.debug(variable_value)
 
     '''
     Store the result of the processing operation in the serverCloudVariables dictionary.

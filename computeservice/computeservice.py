@@ -8,9 +8,9 @@ def setup_debugger(logger_reference):
 def select_method(csv_dataframe, condition_field, condition_operator, condition_value):
     import numpy as np
 
-    logger.debug(condition_field)
-    logger.debug(condition_operator)
-    logger.debug(condition_value)
+    # logger.debug(condition_field)
+    # logger.debug(condition_operator)
+    # logger.debug(condition_value)
 
     # Check to see if the dataframe is empty.
     try:

@@ -21,7 +21,10 @@
             <h1>Flu Data Analysis Example</h1>
         </div>
 
-        <iframe id="myFrame" src="{{ url_for('learnFluDataAnalysisSnap') }}#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/DomainExperts/Epidemiology/epidemiology2.xml" width="1262" height="692" style="margin: 0px 10px;">
+        <iframe id="myFrame" src="{{ url_for('snap') }}?includeMap=True#open:{{ SITE_URL_BASE }}/static/Snap-Sample-Projects/DomainExperts/Epidemiology/epidemiology_final.xml"
+                width="1200"
+                height="692"
+                style="margin: 0px 10px;">
             This is an iFrame. If you see this message, it is still loading.
         </iframe>
 

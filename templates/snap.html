@@ -73,10 +73,10 @@
 			window.onload = function () {
 
                 // Auto-resize world.
-                // world = new WorldMorph(document.getElementById('world'));
+                world = new WorldMorph(document.getElementById('world'));
 
                 // Fixed size world
-                world = new WorldMorph(document.getElementById('world'), false);
+                //world = new WorldMorph(document.getElementById('world'), false);
 
                 world.worldCanvas.focus();
                 global_ide = new IDE_Morph;
@@ -97,10 +97,10 @@
 	<body style="margin: 0; background-color: #373737; ">
 
         <!-- Auto-resize world -->
-        <!-- <canvas id="world" tabindex="1"></canvas> -->
+        <canvas id="world" tabindex="1" style="position: absolute;"></canvas>
 
         <!-- Fixed size world-->
-        <canvas id="world" tabindex="1" width="1262" height="692" ></canvas>
+        <!-- <canvas id="world" tabindex="1" width="1262" height="692" ></canvas> -->
 
         <!--
         Show the map size bar.
@@ -124,15 +124,10 @@
         </div>
         -->
 
-        <div id="map-canvas" style="width: 480px; height: 327px; margin-top: 0px;"></div>
+        {% if problem_config['include_map'] == True %}
+            <div id="map-canvas" style="width: 480px; height: 327px; margin-top: 0px;"></div>
+        {% endif %}
 
-
-
-
-
-
-        <!--Div at the bottom for some extra space.-->
-        <div style="height: 40px;"></div>
 
     </body>
 </html>
